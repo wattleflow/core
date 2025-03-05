@@ -6,7 +6,7 @@
 
 
 from abc import abstractmethod, ABC
-from wattleflow.core import IWattleflow
+from .framework import IWattleflow
 
 """
 Creational Interfaces

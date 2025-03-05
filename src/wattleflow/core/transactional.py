@@ -12,13 +12,13 @@ from typing import (
     Type,
     TypeVar,
 )
-from wattleflow.core import (
-    IAdaptee,
+from .behavioral import (
     IAsyncIterator,
     IIterator,
     IWattleflow,
 )
 
+from .structural import IAdaptee
 
 T = TypeVar("T")
 
