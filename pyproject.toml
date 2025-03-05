@@ -1,0 +1,47 @@
+[build-system]
+requires = ["setuptools<45", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "wattleflow"
+version = "0.0.0.3"
+description = "Wattleflow Core for Python"
+readme = "README.md"
+license = { file = "LICENSE" }
+authors = [{ name = "wattleflow", email = "wattleflow@outlook.com" }]
+keywords = ["wattleflow", "framework", "core", "library", "design", "patterns", "python", "library", "software engineering"]
+requires-python = ">=3.7.1"
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Operating System :: OS Independent",
+    "Intended Audience :: Developers",
+    "Topic :: Software Development :: Libraries",
+]
+
+[project.urls]
+homepage = "https://github.com/wattleflow/core.git"
+repository = "https://github.com/wattleflow/core.git"
+documentation = "https://github.com/wattleflow/docs.git"
+
+[tool.setuptools]
+package-dir = {"" = "src"}  
+include-package-data = true
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.black]
+line-length = 100
+target-version = ['py371']
+
+# python -m build --no-isolation --skip-dependency-check
+# pip install  dist/wattleflow-0.0.0.3-py3-none-any.whl
+# pip install --upgrade "twine" "build<0.10" | pip install --no-cache-dir --ignore-installed "twine" "build<0.10"
+# twine upload --repository-url https://test.pypi.org/legacy/ dist/*
