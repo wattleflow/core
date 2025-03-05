@@ -22,9 +22,8 @@ built to last and grow.
 
 # WattleFlow Core
 
-A Modular and Scalable Framework based on design patterns for Python.
-
-WattleFlow core provides a framework that facilitate design patterns as an architectural building blocks to enable efficient software engineering.
+A Modular and Framework for Python.
+WattleFlow core facilitate design patterns as an architectural building blocks to enable efficient software engineering.
 
 
 # Installation
