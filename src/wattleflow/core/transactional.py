@@ -9,21 +9,18 @@ from typing import (
     Final,
     Generic,
     Iterator,
-    AsyncIterator,
     Type,
     TypeVar,
 )
 from wattleflow.core import (
-    IWattleflow, 
-    IIterator,
-    ITarget,
+    IAdaptee,
     IAsyncIterator,
+    IIterator,
+    IWattleflow,
 )
 
 
 T = TypeVar("T")
-Target = TypeVar("Target", bound=ITarget)
-
 
 """
 Additional Interfaces Specific to Flow-Based Programming
@@ -77,6 +74,19 @@ class ISystem(IWattleflow, ABC):
         pass
 
 
+# Document
+class IDocument(IAdaptee, Generic[T], ABC):
+    @property
+    def identifier(self) -> str:
+        pass
+
+    def update_content(self, data: T):
+        pass
+
+    def specific_request(self) -> T:
+        pass
+
+
 # Event-Driven Interface (IEventListener, IDataflowComponent)
 class IEventListener(IWattleflow, ABC):
     @abstractmethod
@@ -95,22 +105,6 @@ class IEventSource(IWattleflow, ABC):
         pass
 
 
-# Data-Flow-Component Interface
-class IDataflowComponent(IWattleflow, ABC):
-    @abstractmethod
-    def process(self, data):
-        pass
-
-    @abstractmethod
-    def set_input(self, data):
-        pass
-
-    @abstractmethod
-    def get_output(self):
-        pass
-
-
-# Flow-Based specific patterns
 # Repository interface
 class IRepository(IWattleflow, ABC):
     @abstractproperty

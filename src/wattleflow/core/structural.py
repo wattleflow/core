@@ -5,8 +5,7 @@
 # Description: This modul contains abstract structural design patterns.
 
 from abc import abstractmethod, ABC
-from typing import Generic
-from .framework import IWattleflow, T
+from .framework import IWattleflow
 
 
 """
@@ -28,8 +27,6 @@ Structural interfaces
     Flyweight
         IFlyweight
         IFlyweightFactory
-    Graph
-        IGraph
     Proxy
         IProxy
 """
@@ -106,11 +103,6 @@ class IFacade(IWattleflow, ABC):
         pass
 
 
-# Graph interface
-class IGraph(IWattleflow, ABC):
-    pass
-
-
 # Flyweight interface
 class IFlyweight(IWattleflow, ABC):
     @abstractmethod
@@ -128,16 +120,4 @@ class IFlyweightFactory(IWattleflow, ABC):
 class IProxy(IWattleflow, ABC):
     @abstractmethod
     def request(self):
-        pass
-
-
-class IDocument(IAdaptee, Generic[T], ABC):
-    @property
-    def identifier(self) -> str:
-        pass
-
-    def update_content(self, data: T):
-        pass
-
-    def specific_request(self) -> T:
         pass
