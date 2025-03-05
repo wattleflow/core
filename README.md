@@ -44,10 +44,6 @@ Modular Architecture – Designed with extensibility in mind, allowing seamless 
 
 For full documentation, visit [WattleFlow](https://github.com/wattleflow/docs.git) documentation.
 
-# Contributing
-
-We welcome contributions! Please check our GitHub repository for guidelines.
-
 # License
 
 WattleFlow Core is licensed under the Apache 2.0 License. See the LICENSE file for more details.
