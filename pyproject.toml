@@ -1,10 +1,14 @@
 [build-system]
-requires = ["setuptools<45", "wheel"]
+requires = ["setuptools", "setuptools_scm"]
 build-backend = "setuptools.build_meta"
+
+[tool.setuptools_scm]
+write_to = "src/wattleflow/core/_version.py"
+
 
 [project]
 name = "wattleflow"
-version = "0.0.0.5"
+version="0.0.0.6"
 description = "Wattleflow Core for Python"
 readme = "README.md"
 license = { file = "LICENSE" }
@@ -37,11 +41,13 @@ include-package-data = true
 [tool.setuptools.packages.find]
 where = ["src"]
 
+
 [tool.black]
 line-length = 100
 target-version = ['py371']
 
 # python -m build --no-isolation --skip-dependency-check
-# pip install  dist/wattleflow-0.0.0.3-py3-none-any.whl
+# pip install  dist/
 # pip install --upgrade "twine" "build<0.10" | pip install --no-cache-dir --ignore-installed "twine" "build<0.10"
 # twine upload --repository-url https://test.pypi.org/legacy/ dist/*
+# twine upload --repository-url https://pypi.org/legacy/ dist/*

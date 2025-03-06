@@ -2,7 +2,6 @@ from setuptools import setup, find_packages
 
 setup(
     name="wattleflow",
-    version="0.0.0.5",
     description="Wattleflow Core for Python",
     long_description=open("README.md").read(),
     long_description_content_type="text/markdown",
@@ -25,6 +24,8 @@ setup(
         "Intended Audience :: Developers",
         "Topic :: Software Development :: Libraries",
     ],
+    use_scm_version=True,
+    setup_requires=["setuptools_scm"],
     python_requires=">=3.7.1",
     install_requires=[
         "setuptools>=65.6.3"
