@@ -71,12 +71,15 @@ class IPrototype(IWattleflow, ABC):
         pass
 
 
-# Singletone Interface
+# Singleton Interface
 class ISingleton(IWattleflow, ABC):
+    import threading
     _instance = None
+    _lock = threading.Lock()
 
-    @classmethod
-    def get_instance(cls):
+    def __new__(cls, *args, **kwargs):
         if cls._instance is None:
-            cls._instance = cls()
+            with cls._lock:
+                if cls._instance is None:  # Double-checked locking
+                    cls._instance = super().__new__(cls)
         return cls._instance

@@ -4,7 +4,7 @@
 # License: Apache 2 Licence
 # Description: This modul contains transactional pattern interfaces.
 
-from abc import ABC, abstractmethod, abstractproperty
+from abc import ABC, abstractmethod
 from typing import (
     Final,
     Generic,
@@ -17,7 +17,7 @@ from .behavioral import (
     IIterator,
     IWattleflow,
 )
-
+from .creational import ISingleton
 from .structural import IAdaptee
 
 T = TypeVar("T")
@@ -107,7 +107,8 @@ class IEventSource(IWattleflow, ABC):
 
 # Repository interface
 class IRepository(IWattleflow, ABC):
-    @abstractproperty
+    @property
+    @abstractmethod
     def count(self) -> int:
         pass
 
@@ -246,3 +247,27 @@ class IUnitOfWork(IWattleflow, ABC):
     def register_deleted(self, entity, *args, **kwargs):
         """Registers an entity to be deleted from the database."""
         pass
+
+
+class IScheduler(ISingleton, IEventSource):
+    @abstractmethod
+    def setup_orchestrator(self, *args, **kwargs):
+        pass
+
+    @abstractmethod
+    def start_orchestration(self, parallel: bool = False):
+        pass
+
+    @abstractmethod
+    def stop_orchestration(self):
+        pass
+
+    @abstractmethod
+    def register_listener(self, listener: IEventListener) -> None:
+        pass
+
+    @abstractmethod
+    def emit_event(self, event, **kwargs):
+        pass
+
+

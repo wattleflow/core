@@ -87,6 +87,7 @@ from .transactional import (
    IAsyncProcessor,
    IQuery,
    ISaga,
+   IScheduler,
    IUnitOfWork
 )
 
@@ -169,5 +170,6 @@ __all__ = [
    'IAsyncProcessor',
    'IQuery',
    'ISaga',
+   'IScheduler',
    'IUnitOfWork'
 ]

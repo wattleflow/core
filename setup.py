@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="wattleflow",
-    description="Wattleflow Core for Python",
+    description="Wattleflow Core",
     long_description=open("README.md").read(),
     long_description_content_type="text/markdown",
     author="wattleFlow",
@@ -11,6 +11,7 @@ setup(
     license="Apache-2.0",
     packages=find_packages(where="src"),
     package_dir={"src": "src/wattleflow"},
+    include_package_data=True,
     classifiers=[
         "Development Status :: 5 - Production/Stable",
         "Programming Language :: Python :: 3.7",
@@ -23,10 +24,12 @@ setup(
         "Operating System :: OS Independent",
         "Intended Audience :: Developers",
         "Topic :: Software Development :: Libraries",
+        "Topic :: Software Development :: Libraries :: Python Modules",
+        "License :: OSI Approved :: Apache Software License",
     ],
-    use_scm_version=True,
-    setup_requires=["setuptools_scm"],
     python_requires=">=3.7.1",
+    setup_requires=["setuptools_scm"],
+    use_scm_version=True,
     install_requires=[
         "setuptools>=65.6.3"
     ],
