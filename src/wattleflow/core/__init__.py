@@ -57,7 +57,8 @@ from .creational import (
 )
 from .framework import (
    IWattleflowCoreInterface,
-   IWattleflow
+   IWattleflow,
+   T,
 )
 from .structural import (
    ITarget,

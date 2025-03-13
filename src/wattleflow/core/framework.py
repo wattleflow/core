@@ -7,7 +7,7 @@
 from abc import ABC
 from typing import TypeVar
 
-__version__ = "0.0.1.0"
+__version__ = "1.0.0.0"
 
 
 class IWattleflowCoreInterface(ABC):
