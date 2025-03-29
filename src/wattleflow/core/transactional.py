@@ -137,7 +137,7 @@ class IBlackboard(IWattleflow, ABC):
         pass
 
     @abstractmethod
-    def subscribe(self, repository: IRepository, *args, **kwargs):
+    def register(self, repository: IRepository, *args, **kwargs):
         pass
 
     @abstractmethod

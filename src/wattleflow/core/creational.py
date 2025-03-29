@@ -72,14 +72,18 @@ class IPrototype(IWattleflow, ABC):
 
 
 # Singleton Interface
-class ISingleton(IWattleflow, ABC):
+class ISingleton(IWattleflow):
     import threading
-    _instance = None
     _lock = threading.Lock()
+    _instances = {}
+
+    @abstractmethod
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
 
     def __new__(cls, *args, **kwargs):
-        if cls._instance is None:
+        if cls not in cls._instances:
             with cls._lock:
-                if cls._instance is None:  # Double-checked locking
-                    cls._instance = super().__new__(cls)
-        return cls._instance
+                if cls not in cls._instances:
+                    cls._instances[cls] = super().__new__(cls)
+        return cls._instances[cls]

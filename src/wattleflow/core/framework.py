@@ -13,12 +13,12 @@ __version__ = "1.0.0.0"
 class IWattleflowCoreInterface(ABC):
     def __init__(self):
         super().__init__()
-        self._name = self.__class__.__name__
+        self.name = self.__class__.__name__
 
 
 class IWattleflow(IWattleflowCoreInterface, ABC):
     def __init__(self, *args, **kwargs):
-        super().__init__()
+        IWattleflowCoreInterface.__init__(self)
 
 
 T = TypeVar("T")

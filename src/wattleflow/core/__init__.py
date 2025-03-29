@@ -18,7 +18,8 @@ from .behavioral import (
    IStrategyContext,
    ITemplate,
    IVisitor,
-   IElement
+   IElement,
+   ILogger
 )
 from .concurent import (
    IFuture,
@@ -58,6 +59,7 @@ from .creational import (
 from .framework import (
    IWattleflowCoreInterface,
    IWattleflow,
+   C,
    T,
 )
 from .structural import (
@@ -113,6 +115,7 @@ __all__ = [
    'ITemplate',
    'IVisitor',
    'IElement',
+   'ILogger',
    'IFuture',
    'IPromise',
    'ICallback',
@@ -172,5 +175,7 @@ __all__ = [
    'IQuery',
    'ISaga',
    'IScheduler',
-   'IUnitOfWork'
+   'IUnitOfWork',
+   'C'
+   'T',
 ]

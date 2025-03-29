@@ -5,18 +5,15 @@
 # Description: This modul contains abstract design pattern interfaces.
 
 from abc import ABC, abstractmethod
-from .framework import IWattleflow
 from typing import (
     Any,
     AsyncIterator,
     Generic,
     Iterator,
     Type,
-    TypeVar,
 )
+from .framework import IWattleflow, T
 
-
-T = TypeVar("T")
 
 """
 Behavioral Interfaces
@@ -377,3 +374,39 @@ class IElement(IWattleflow, ABC):
     @abstractmethod
     def accept(self, visitor: IVisitor):
         pass
+
+# ILogger interface (*)
+class ILogger(IObservable, ABC):
+
+    @abstractmethod
+    def subscribe(self, observer):
+        pass
+
+    @abstractmethod
+    def critical(self, msg, *args, **kwargs):
+        pass
+
+    @abstractmethod
+    def debug(self, msg, *args, **kwargs):
+        pass
+
+    @abstractmethod
+    def exception(self, msg, *args, **kwargs):
+        pass
+
+    @abstractmethod
+    def error(self, msg, *args, **kwargs):
+        pass
+
+    @abstractmethod
+    def fatal(self, msg, *args, **kwargs):
+        pass
+
+    @abstractmethod
+    def info(self, msg, *args, **kwargs):
+        pass
+
+    @abstractmethod
+    def warning(self, level, msg, *args, **kwargs):
+        pass
+
