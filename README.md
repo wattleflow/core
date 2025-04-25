@@ -10,18 +10,17 @@ built to last and grow.
 
 ---
 
-| Characteristic           | Value                                                      |
-| ------------------------ | ---------------------------------------------------------- |
-| **Version**              | 0.0.0.9 (latest stable release)                            |
-| **License**              | Apache 2.0 License                                         |
-| **Python Compatibility** | Python >=3.7.1                                             |
-| **Dependencies**         | None                                                       |
-| **Size**                 | nimble                                                     |
+| Characteristic           | Value                                                                   |
+| ------------------------ | ----------------------------------------------------------------------- |
+| **Version**              | 0.0.0.10 (latest stable release)                                        |
+| **License**              | Apache 2.0 License                                                      |
+| **Python Compatibility** | Python >=3.7.1                                                          |
+| **Dependencies**         | None                                                                    |
+| **Size**                 | nimble                                                                  |
 | **Documentation**        | [WattleFlow Core Documentation](https://github.com/wattleflow/docs.git) |
 
 
 # WattleFlow Core
-
 A Modular and Framework for Python.
 WattleFlow core facilitate design patterns as an architectural building blocks to enable efficient software engineering.
 

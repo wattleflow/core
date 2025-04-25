@@ -269,5 +269,3 @@ class IScheduler(ISingleton, IEventSource):
     @abstractmethod
     def emit_event(self, event, **kwargs):
         pass
-
-

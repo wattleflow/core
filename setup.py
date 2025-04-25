@@ -25,7 +25,6 @@ setup(
         "Intended Audience :: Developers",
         "Topic :: Software Development :: Libraries",
         "Topic :: Software Development :: Libraries :: Python Modules",
-        "License :: OSI Approved :: Apache Software License",
     ],
     python_requires=">=3.7.1",
     setup_requires=["setuptools_scm"],

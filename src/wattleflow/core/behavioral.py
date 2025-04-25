@@ -10,6 +10,7 @@ from typing import (
     AsyncIterator,
     Generic,
     Iterator,
+    Optional,
     Type,
 )
 from .framework import IWattleflow, T
@@ -154,17 +155,18 @@ class IAsyncIterator(Generic[T], ABC):
     """
     IAsyncIterator - Interface for asynchronous iterators.
     """
+    def __init__(self):
+        self._cycle: int = 0
+        self._iterator: Optional[AsyncIterator[T]] = None
 
-    _cycle: int = 0
-    _iterator: AsyncIterator[T] = None
-
-    def __aiter__(self) -> AsyncIterator[T]:
+    async def __aiter__(self) -> AsyncIterator[T]:
+        self._iterator = await self.create_iterator()
         return self
 
     async def __anext__(self) -> T:
         """Returns the item asynchronously or raises StopAsyncIteration."""
         try:
-            current = await anext(self._iterator)
+            current = await self._iterator.__anext__()
             self._cycle += 1
             return current
         except StopAsyncIteration:
@@ -409,4 +411,3 @@ class ILogger(IObservable, ABC):
     @abstractmethod
     def warning(self, level, msg, *args, **kwargs):
         pass
-
