@@ -51,7 +51,7 @@ class IAdapter(ITarget, ABC):
         self._adaptee = adaptee
 
     @abstractmethod
-    def request(self):
+    def request(self) -> ITarget:
         pass
 
 

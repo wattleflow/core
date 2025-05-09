@@ -12,7 +12,7 @@ built to last and grow.
 
 | Characteristic           | Value                                                                   |
 | ------------------------ | ----------------------------------------------------------------------- |
-| **Version**              | 0.0.0.10 (latest stable release)                                        |
+| **Version**              | 0.0.0.11 (latest stable release)                                        |
 | **License**              | Apache 2.0 License                                                      |
 | **Python Compatibility** | Python >=3.7.1                                                          |
 | **Dependencies**         | None                                                                    |
@@ -34,14 +34,11 @@ pip install wattleflow
 
 
 # Key Features
-
 Modular Architecture – Designed with extensibility in mind, allowing seamless development through reuse of design patterns as components.
 
 
 # Documentation
-
 For full documentation, visit [WattleFlow](https://github.com/wattleflow/docs.git) documentation.
 
 # License
-
 WattleFlow Core is licensed under the Apache 2.0 License. See the LICENSE file for more details.

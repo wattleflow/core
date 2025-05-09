@@ -377,6 +377,7 @@ class IElement(IWattleflow, ABC):
     def accept(self, visitor: IVisitor):
         pass
 
+
 # ILogger interface (*)
 class ILogger(IObservable, ABC):
 
