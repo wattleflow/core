@@ -36,7 +36,7 @@ built to last and grow.
 | ------------------------ | ----------------------------------------------------------------------- |
 | **Version**              | 0.0.0.13 (latest stable release)                                        |
 | **License**              | Apache 2.0 License                                                      |
-| **Python Compatibility** | Python >=3.7.1                                                          |
+| **Python Compatibility** | Python >=3.8.20                                                         |
 | **Dependencies**         | None                                                                    |
 | **Size**                 | nimble                                                                  |
 | **Documentation**        | [WattleFlow Core Documentation](https://github.com/wattleflow/docs.git) |
@@ -59,7 +59,9 @@ pip install wattleflow
 # Dev guide
 ```bash
 
-conda create --name core python=3.7.1
+conda env remove -n core  # if exists
+
+conda create --name core python=3.8.20
 
 pip install -r requirements-dev.txt
 ```
