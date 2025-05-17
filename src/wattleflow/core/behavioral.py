@@ -6,6 +6,7 @@
 
 from abc import ABC, abstractmethod
 from typing import (
+    get_args,
     Any,
     AsyncIterator,
     Generic,
@@ -13,7 +14,7 @@ from typing import (
     Optional,
     Type,
 )
-from .framework import IWattleflow, T
+from framework import IWattleflow, T
 
 
 """
@@ -120,25 +121,29 @@ class IExpression(IWattleflow, ABC):
 class IIterator(Generic[T], ABC):
     """
     IIterator - Interface for synchronous iterators.
-
-    Methods:
-        - __iter__() -> Iterator[T]: Enables iteration using 'for'.
-        - __next__() -> T: Retrieves next item synchronously.
-        - create_iterator() -> Iterator[T]: Returns an iterator instance.
     """
+    def __init__(self) -> None:
+        if not hasattr(self, '_expected_type'):
+            raise TypeError(
+                f"{self.__class__.__name__} must be instantiated with an explicit generic type"
+                f"e.g. {self.__class__.__name__}[str]"
+            )
 
-    _cycle: int = 0
-    _iterator: Iterator[T] = None  # Sinkroni iterator
+        self._expected_type = get_args(self._expected_type)[0]
+        self._cycle: int = 0
+        self._iterator: Optional[Iterator[T]] = None
 
     def __iter__(self) -> Iterator[T]:
+        self._iterator = self.create_iterator()
         return self
 
     def __next__(self) -> T:
-        """Returns the item synchronously in iteration | StopIteration."""
+        if self._iterator is None:
+            raise RuntimeError("Iterator not initialized. Call __iter__() first.")
         try:
-            current = next(self._iterator)
+            item = next(self._iterator)
             self._cycle += 1
-            return current
+            return item
         except StopIteration:
             raise
 
@@ -155,26 +160,29 @@ class IAsyncIterator(Generic[T], ABC):
     """
     IAsyncIterator - Interface for asynchronous iterators.
     """
-    def __init__(self):
+    def __init__(self) -> None:
         self._cycle: int = 0
-        self._iterator: Optional[AsyncIterator[T]] = None
+        self._iterator: Optional[IAsyncIterator[T]] = None
 
-    async def __aiter__(self) -> AsyncIterator[T]:
-        self._iterator = await self.create_iterator()
+    def __aiter__(self) -> AsyncIterator[T]:
         return self
 
     async def __anext__(self) -> T:
-        """Returns the item asynchronously or raises StopAsyncIteration."""
+        if self._iterator is None:
+            raise RuntimeError(f"{self.__class__.__name__}: call self.create_iterator() in your __init__.")   # noqa: E501
+
         try:
-            current = await self._iterator.__anext__()
+            item = await self._iterator.__anext__()
             self._cycle += 1
-            return current
+            return item
         except StopAsyncIteration:
             raise
 
     @abstractmethod
     async def create_iterator(self) -> AsyncIterator[T]:
-        """Must implement: a new instance of the async iterator."""
+        """
+        Should return a new async iterator instance.
+        """
         pass
 
 

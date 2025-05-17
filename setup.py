@@ -30,6 +30,5 @@ setup(
     setup_requires=["setuptools_scm"],
     use_scm_version=True,
     install_requires=[
-        "setuptools>=65.6.3"
     ],
 )

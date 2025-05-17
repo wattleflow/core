@@ -19,7 +19,7 @@ from .behavioral import (
    ITemplate,
    IVisitor,
    IElement,
-   ILogger
+   ILogger,
 )
 from .concurent import (
    IFuture,
@@ -46,7 +46,7 @@ from .concurent import (
    IWorker,
    IStencil,
    IGraphProcessing,
-   ISPMDProgram
+   ISPMDProgram,
 )
 from .creational import (
    IFactory,
@@ -54,7 +54,7 @@ from .creational import (
    IProduct,
    ICreator,
    IPrototype,
-   ISingleton
+   ISingleton,
 )
 from .framework import (
    IWattleflowCoreInterface,
@@ -74,7 +74,7 @@ from .structural import (
    IFacade,
    IFlyweight,
    IFlyweightFactory,
-   IProxy
+   IProxy,
 )
 from .transactional import (
    IActor,
@@ -91,7 +91,7 @@ from .transactional import (
    IQuery,
    ISaga,
    IScheduler,
-   IUnitOfWork
+   IUnitOfWork,
 )
 
 __all__ = [
@@ -178,4 +178,4 @@ __all__ = [
    'IUnitOfWork',
    'C'
    'T',
-]
+]  # type: ignore

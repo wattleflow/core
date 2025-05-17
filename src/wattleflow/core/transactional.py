@@ -6,10 +6,8 @@
 
 from abc import ABC, abstractmethod
 from typing import (
-    Final,
     Generic,
     Iterator,
-    Type,
     TypeVar,
 )
 from .behavioral import (
@@ -77,12 +75,15 @@ class ISystem(IWattleflow, ABC):
 # Document
 class IDocument(IAdaptee, Generic[T], ABC):
     @property
+    @abstractmethod
     def identifier(self) -> str:
         pass
 
+    @abstractmethod
     def update_content(self, data: T):
         pass
 
+    @abstractmethod
     def specific_request(self) -> T:
         pass
 
@@ -113,11 +114,11 @@ class IRepository(IWattleflow, ABC):
         pass
 
     @abstractmethod
-    def read(self, *args, **kwargs) -> Generic[T]:
+    def read(self, *args, **kwargs) -> T:
         pass
 
     @abstractmethod
-    def write(self, *args, **kwargs) -> Generic[T]:
+    def write(self, *args, **kwargs) -> T:
         pass
 
 
@@ -129,11 +130,11 @@ class IBlackboard(IWattleflow, ABC):
         pass
 
     @abstractmethod
-    def create(self, *args, **kwargs) -> Generic[T]:
+    def create(self, *args, **kwargs) -> T:
         pass
 
     @abstractmethod
-    def read(self, identifier: str, *args, **kwargs) -> Generic[T]:
+    def read(self, identifier: str, *args, **kwargs) -> T:
         pass
 
     @abstractmethod
@@ -141,7 +142,7 @@ class IBlackboard(IWattleflow, ABC):
         pass
 
     @abstractmethod
-    def write(self, document: Generic[T], *args, **kwargs) -> Generic[T]:
+    def write(self, document: T, *args, **kwargs) -> T:
         pass
 
 
@@ -160,7 +161,14 @@ class IPipeline(IWattleflow, ABC):
 
 # Processor Interface
 class IProcessor(IIterator, Generic[T], ABC):
-    _expected_type: Final[Type[T]]
+    def __init__(self):
+        if not hasattr(self, '__orig_class__'):
+            raise TypeError(
+                f"{self.__class__.__name__} must be instantiated with an explicit generic type"
+                f"e.g. {self.__class__.__name__}[str]"
+            )
+        from typing import get_args
+        self._expected_type = get_args(self.__orig_class__)[0]   # type: ignore
 
     def __iter__(self) -> Iterator[T]:
         return self
@@ -174,12 +182,20 @@ class IProcessor(IIterator, Generic[T], ABC):
         pass
 
 
-# Processor Interface
+# AsyncProcessor Interface
 class IAsyncProcessor(IAsyncIterator, Generic[T], ABC):
-    _expected_type: Final[Type[T]]
 
-    def __iter__(self) -> Iterator[T]:
-        return self
+    def __init__(self):
+        if not hasattr(self, '__orig_class__'):
+            raise TypeError(
+                f"{self.__class__.__name__} must be instantiated with an explicit generic type"
+                f"e.g. {self.__class__.__name__}[str]"
+            )
+        from typing import get_args
+        self._expected_type = get_args(self.__orig_class__)[0]   # type: ignore
+
+    def __aiter__(self) -> Iterator[T]:
+        return self  # type: ignore
 
     @abstractmethod
     def __next__(self) -> T:
@@ -216,11 +232,6 @@ class ISaga(IWattleflow, ABC):
 class IUnitOfWork(IWattleflow, ABC):
     """
     Interface for the UnitOfWork pattern.
-        commit()
-        rollback()
-        register_new(entity)
-        register_dirty(entity)
-        register_deleted(entity)
     """
 
     @abstractmethod

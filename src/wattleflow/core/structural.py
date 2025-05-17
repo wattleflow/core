@@ -6,7 +6,7 @@
 
 from abc import abstractmethod, ABC
 from .framework import IWattleflow
-
+from typing import Any
 
 """
 Structural interfaces
@@ -42,7 +42,7 @@ class ITarget(IWattleflow, ABC):
 
 class IAdaptee(IWattleflow, ABC):
     @abstractmethod
-    def specific_request(self):
+    def specific_request(self) -> Any:
         pass
 
 
@@ -68,7 +68,7 @@ class IAbstraction(IWattleflow, ABC):
         pass
 
 
-# Composite interface (IComponent,IComposite)
+# Composite interface (IComponent, IComposite)
 class IComponent(IWattleflow, ABC):
     @abstractmethod
     def process(self, data):
@@ -112,12 +112,12 @@ class IFlyweight(IWattleflow, ABC):
 
 class IFlyweightFactory(IWattleflow, ABC):
     @abstractmethod
-    def get_flyweight(self, key):
+    def get_flyweight(self, key) -> Any:
         pass
 
 
 # Proxy interface
 class IProxy(IWattleflow, ABC):
     @abstractmethod
-    def request(self):
+    def request(self) -> Any:
         pass

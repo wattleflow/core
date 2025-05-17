@@ -1,7 +1,12 @@
-# WattleFlow Framework
-
+# WattleFlow Core
 ![WattleFlow Logo](src/wattleflow/logo/wattleflow.png)
 
+
+# WattleFlow Core Framework
+A modular framework for Python, that facilitate design patterns as an architectural building blocks to enable efficient engineering.
+
+
+# Features
 WattleFlow—graceful flow,
 modular, scaled with purpose,
 patterns guide the stream,
@@ -10,9 +15,26 @@ built to last and grow.
 
 ---
 
+## Key
+- Modular architecture: Allows for reusable design patterns as components, making it easier to extend and maintain ETL solutions.
+- No external dependencies: Keeps installation and integration simple.
+- Built for python software engineers: Tailored for building frameworks with minimal overhead.
+
+
+## Libraries
+    - `__init__.py`
+    - `behavioral.py`
+    - `concurent.py`
+    - `creational.py`
+    - `framework.py`
+    - `structural.py`
+    - `transactional.py`
+
+# Characteristics
+
 | Characteristic           | Value                                                                   |
 | ------------------------ | ----------------------------------------------------------------------- |
-| **Version**              | 0.0.0.11 (latest stable release)                                        |
+| **Version**              | 0.0.0.12 (latest stable release)                                        |
 | **License**              | Apache 2.0 License                                                      |
 | **Python Compatibility** | Python >=3.7.1                                                          |
 | **Dependencies**         | None                                                                    |
@@ -20,25 +42,32 @@ built to last and grow.
 | **Documentation**        | [WattleFlow Core Documentation](https://github.com/wattleflow/docs.git) |
 
 
-# WattleFlow Core
-A Modular and Framework for Python.
-WattleFlow core facilitate design patterns as an architectural building blocks to enable efficient software engineering.
-
-
 # Installation
 ```bash
 
 pip install wattleflow
-
 ```
 
+# Usage examples
+- [Wattleflow Workflow](https://github.com/wattleflow/workflow/)
 
-# Key Features
-Modular Architecture – Designed with extensibility in mind, allowing seamless development through reuse of design patterns as components.
+
+# Dependencies
+- none
+
+
+# Dev guide
+```bash
+
+conda create --name core python=3.7.1
+
+pip install -r requirements-dev.txt
+```
 
 
 # Documentation
 For full documentation, visit [WattleFlow](https://github.com/wattleflow/docs.git) documentation.
+
 
 # License
 WattleFlow Core is licensed under the Apache 2.0 License. See the LICENSE file for more details.
