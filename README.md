@@ -34,7 +34,7 @@ built to last and grow.
 
 | Characteristic           | Value                                                                   |
 | ------------------------ | ----------------------------------------------------------------------- |
-| **Version**              | 0.0.0.12 (latest stable release)                                        |
+| **Version**              | 0.0.0.13 (latest stable release)                                        |
 | **License**              | Apache 2.0 License                                                      |
 | **Python Compatibility** | Python >=3.7.1                                                          |
 | **Dependencies**         | None                                                                    |

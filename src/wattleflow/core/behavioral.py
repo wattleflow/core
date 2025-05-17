@@ -14,7 +14,7 @@ from typing import (
     Optional,
     Type,
 )
-from framework import IWattleflow, T
+from .framework import IWattleflow, T
 
 
 """
