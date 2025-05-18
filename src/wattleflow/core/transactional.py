@@ -5,20 +5,20 @@
 # Description: This modul contains transactional pattern interfaces.
 
 from abc import ABC, abstractmethod
+from datetime import datetime
 from typing import (
     Any,
     Dict,
     Generic,
     Optional,
-    TypeVar,
 )
+from wattleflow.core import T
 from .behavioral import (
     IWattleflow,
 )
 from .creational import ISingleton
 from .structural import IAdaptee
 
-T = TypeVar("T")
 
 """
 Additional Interfaces Specific to Flow-Based Programming
@@ -88,13 +88,7 @@ class IDocument(IAdaptee, Generic[T], ABC):
         pass
 
 
-# Event-Driven Interface (IEventListener, IDataflowComponent)
-from abc import ABC, abstractmethod
-from typing import Any, Dict
-from datetime import datetime
-from uuid import uuid4
-
-
+# Event-Driven Interface (IEvent, IEventListener, IDataflowComponent)
 class IEvent(ABC):
     @property
     @abstractmethod
@@ -156,11 +150,11 @@ class IRepository(IWattleflow, ABC):
         pass
 
     @abstractmethod
-    def read(self, identifier: str, item: Optional[Any] = None, *args, **kwargs) -> Any:
+    def read(self, identifier: str, *args, **kwargs) -> Any:
         pass
 
     @abstractmethod
-    def write(self, pipeline: "IPipeline", item: Any, *args, **kwargs) -> Any:
+    def write(self, item: Any, *args, **kwargs) -> Any:
         pass
 
 
