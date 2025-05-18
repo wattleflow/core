@@ -12,7 +12,7 @@ from typing import (
     Generic,
     Optional,
 )
-from wattleflow.core import T
+from .framework import T
 from .behavioral import (
     IWattleflow,
 )
