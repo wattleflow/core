@@ -6,13 +6,13 @@
 
 from abc import ABC, abstractmethod
 from typing import (
+    Any,
     Generic,
-    Iterator,
+    Generator,
+    Optional,
     TypeVar,
 )
 from .behavioral import (
-    IAsyncIterator,
-    IIterator,
     IWattleflow,
 )
 from .creational import ISingleton
@@ -159,50 +159,14 @@ class IPipeline(IWattleflow, ABC):
         pass
 
 
-# Processor Interface
-class IProcessor(IIterator, Generic[T], ABC):
-    def __init__(self):
-        if not hasattr(self, '__orig_class__'):
-            raise TypeError(
-                f"{self.__class__.__name__} must be instantiated with an explicit generic type"
-                f"e.g. {self.__class__.__name__}[str]"
-            )
-        from typing import get_args
-        self._expected_type = get_args(self.__orig_class__)[0]   # type: ignore
-
-    def __iter__(self) -> Iterator[T]:
-        return self
-
+# IProcessor Interface
+class IProcessor(IWattleflow, ABC):
     @abstractmethod
-    def __next__(self) -> T:
+    def create_generator(self) -> Any:
         pass
 
     @abstractmethod
-    def create_iterator(self) -> Iterator[T]:
-        pass
-
-
-# AsyncProcessor Interface
-class IAsyncProcessor(IAsyncIterator, Generic[T], ABC):
-
-    def __init__(self):
-        if not hasattr(self, '__orig_class__'):
-            raise TypeError(
-                f"{self.__class__.__name__} must be instantiated with an explicit generic type"
-                f"e.g. {self.__class__.__name__}[str]"
-            )
-        from typing import get_args
-        self._expected_type = get_args(self.__orig_class__)[0]   # type: ignore
-
-    def __aiter__(self) -> Iterator[T]:
-        return self  # type: ignore
-
-    @abstractmethod
-    def __next__(self) -> T:
-        pass
-
-    @abstractmethod
-    def create_iterator(self) -> Iterator[T]:
+    def start(self) -> None:
         pass
 
 

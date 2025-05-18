@@ -11,8 +11,8 @@ from typing import (
     AsyncIterator,
     Generic,
     Iterator,
+    Iterator,
     Optional,
-    Type,
 )
 from .framework import IWattleflow, T
 
@@ -116,88 +116,48 @@ class IExpression(IWattleflow, ABC):
         pass
 
 
-# Iterator interfaces (IIterator, IAsyncIterator)
+# Iterator interfaces (IIterator, IAsyncIterator, IAggregate)
 # IIterator
-class IIterator(Generic[T], ABC):
-    """
-    IIterator - Interface for synchronous iterators.
-    """
+class IIterator(IWattleflow, Iterator[T], Generic[T], ABC):
     def __init__(self) -> None:
-        if not hasattr(self, '_expected_type'):
-            raise TypeError(
-                f"{self.__class__.__name__} must be instantiated with an explicit generic type"
-                f"e.g. {self.__class__.__name__}[str]"
-            )
-
-        self._expected_type = get_args(self._expected_type)[0]
-        self._cycle: int = 0
         self._iterator: Optional[Iterator[T]] = None
 
     def __iter__(self) -> Iterator[T]:
-        self._iterator = self.create_iterator()
         return self
 
     def __next__(self) -> T:
         if self._iterator is None:
-            raise RuntimeError("Iterator not initialized. Call __iter__() first.")
-        try:
-            item = next(self._iterator)
-            self._cycle += 1
-            return item
-        except StopIteration:
-            raise
+            self._iterator = self.create_iterator()
+        return next(self._iterator)
 
     @abstractmethod
     def create_iterator(self) -> Iterator[T]:
-        """
-        Must implement: a new instance of the iterator.
-        """
         pass
 
 
 # IAsyncIterator
-class IAsyncIterator(Generic[T], ABC):
-    """
-    IAsyncIterator - Interface for asynchronous iterators.
-    """
+class IAsyncIterator(IWattleflow, AsyncIterator[T], Generic[T], ABC):
     def __init__(self) -> None:
-        self._cycle: int = 0
-        self._iterator: Optional[IAsyncIterator[T]] = None
+        self._iterator: Optional[AsyncIterator[T]] = None
 
     def __aiter__(self) -> AsyncIterator[T]:
         return self
 
     async def __anext__(self) -> T:
         if self._iterator is None:
-            raise RuntimeError(f"{self.__class__.__name__}: call self.create_iterator() in your __init__.")   # noqa: E501
-
-        try:
-            item = await self._iterator.__anext__()
-            self._cycle += 1
-            return item
-        except StopAsyncIteration:
-            raise
+            self._iterator = await self.create_iterator()
+        return await self._iterator.__anext__()
 
     @abstractmethod
     async def create_iterator(self) -> AsyncIterator[T]:
-        """
-        Should return a new async iterator instance.
-        """
         pass
 
 
-class IAggregate(IWattleflow, Type[IIterator], ABC):
-    """
-    IAggregate - abstract interface.
-
-    Interface:
-        create_iterator(self) -> IITerator
-    """
-
+# IAggregate
+class IAggregate(IWattleflow, Generic[T], ABC):
     @abstractmethod
-    def create_iterator(self) -> IIterator:
+    def create_iterator(self) -> IIterator[T] | IAsyncIterator[T]:
         pass
-
 
 # Mediator interfaces
 class IMediator(IWattleflow, ABC):

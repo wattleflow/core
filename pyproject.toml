@@ -8,7 +8,7 @@ write_to = "src/wattleflow/core/_version.py"
 
 [project]
 name = "wattleflow"
-version="0.0.0.13"
+version="0.0.0.14"
 description = "Wattleflow Core for Python"
 readme = "README.md"
 license = { file = "LICENSE" }
@@ -17,7 +17,7 @@ keywords = ["wattleflow", "framework", "core", "library", "design", "patterns", 
 requires-python = ">=3.8.20"
 classifiers = [
     "Development Status :: 5 - Production/Stable",
-    "Programming Language :: Python :: 3.8.20",
+    "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
@@ -42,10 +42,4 @@ where = ["src"]
 
 [tool.black]
 line-length = 100
-target-version = ['py382']
-
-# python -m build --no-isolation --skip-dependency-check
-# pip install  dist/
-# pip install --upgrade "twine" "build<0.10" | pip install --no-cache-dir --ignore-installed "twine" "build<0.10"
-# twine upload --repository-url https://test.pypi.org/legacy/ dist/*
-# twine upload --repository-url https://pypi.org/legacy/ dist/*
+target-version = ['py38']
