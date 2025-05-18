@@ -7,8 +7,8 @@
 from abc import ABC, abstractmethod
 from typing import (
     Any,
+    Dict,
     Generic,
-    Generator,
     Optional,
     TypeVar,
 )
@@ -89,16 +89,54 @@ class IDocument(IAdaptee, Generic[T], ABC):
 
 
 # Event-Driven Interface (IEventListener, IDataflowComponent)
+from abc import ABC, abstractmethod
+from typing import Any, Dict
+from datetime import datetime
+from uuid import uuid4
+
+
+class IEvent(ABC):
+    @property
+    @abstractmethod
+    def correlation_id(self) -> Optional[str]:
+        pass
+
+    @property
+    @abstractmethod
+    def id(self) -> str:
+        pass
+
+    @property
+    @abstractmethod
+    def source(self) -> Optional[str]:
+        pass
+
+    @property
+    @abstractmethod
+    def timestamp(self) -> datetime:
+        pass
+
+    @property
+    @abstractmethod
+    def type(self) -> str:
+        pass
+
+    @property
+    @abstractmethod
+    def payload(self) -> Dict[str, Any]:
+        pass
+
+
 class IEventListener(IWattleflow, ABC):
     @abstractmethod
-    def on_event(self, event):
+    def on_event(self, event: IEvent):
         pass
 
 
 # Event-Source Interface
 class IEventSource(IWattleflow, ABC):
     @abstractmethod
-    def register_listener(self, listener):
+    def register_listener(self, listener: IEventListener):
         pass
 
     @abstractmethod
@@ -114,11 +152,15 @@ class IRepository(IWattleflow, ABC):
         pass
 
     @abstractmethod
-    def read(self, *args, **kwargs) -> T:
+    def clear(self) -> None:
         pass
 
     @abstractmethod
-    def write(self, *args, **kwargs) -> T:
+    def read(self, identifier: str, item: Optional[Any] = None, *args, **kwargs) -> Any:
+        pass
+
+    @abstractmethod
+    def write(self, pipeline: "IPipeline", item: Any, *args, **kwargs) -> Any:
         pass
 
 
@@ -126,15 +168,24 @@ class IRepository(IWattleflow, ABC):
 class IBlackboard(IWattleflow, ABC):
     @property
     @abstractmethod
+    def canvas(self) -> Dict[str, Any]:
+        pass
+
+    @property
+    @abstractmethod
     def count(self) -> int:
         pass
 
     @abstractmethod
-    def create(self, *args, **kwargs) -> T:
+    def clear(self) -> None:
         pass
 
     @abstractmethod
-    def read(self, identifier: str, *args, **kwargs) -> T:
+    def create(self, *args, **kwargs) -> Any:
+        pass
+
+    @abstractmethod
+    def read(self, identifier: str, *args, **kwargs) -> Optional[Any]:
         pass
 
     @abstractmethod
@@ -142,7 +193,7 @@ class IBlackboard(IWattleflow, ABC):
         pass
 
     @abstractmethod
-    def write(self, document: T, *args, **kwargs) -> T:
+    def write(self, item: Any, *args, **kwargs) -> str:
         pass
 
 

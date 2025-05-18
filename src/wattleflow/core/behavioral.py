@@ -6,13 +6,12 @@
 
 from abc import ABC, abstractmethod
 from typing import (
-    get_args,
     Any,
     AsyncIterator,
     Generic,
     Iterator,
-    Iterator,
     Optional,
+    Union
 )
 from .framework import IWattleflow, T
 
@@ -156,8 +155,9 @@ class IAsyncIterator(IWattleflow, AsyncIterator[T], Generic[T], ABC):
 # IAggregate
 class IAggregate(IWattleflow, Generic[T], ABC):
     @abstractmethod
-    def create_iterator(self) -> IIterator[T] | IAsyncIterator[T]:
+    def create_iterator(self) -> Union[IIterator[T], IAsyncIterator[T]]:
         pass
+
 
 # Mediator interfaces
 class IMediator(IWattleflow, ABC):
