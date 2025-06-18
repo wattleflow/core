@@ -1,4 +1,4 @@
-Sumarum
+# Uvod
 U okruženju ubrzanih tehnoloških promjena i rastuće složenosti podatkovne infrastrukture, organizacije se suočavaju s novom vrstom pritiska: kako istovremeno osigurati učinkovitost, usklađenost i sigurnost informacijskih sustava. Proliferacija cloud tehnologija, raznolikost alata i vendora te sve veći volumeni podataka stvaraju operativne i strateške izazove za ocuvanje i zastitu integriteta podataka, informacijske sigurnosti. 
 
 Dodatni sloj kompleksnosti donosi regulatorni okvir, osobito nadolazeća reforma australskog Privacy Acta 1988. Predložene izmjene pojačavaju nadzor nad obradom osobnih podataka, unose veća prava za pojedince, zahtijevaju veću transparentnost automatiziranih odluka te uvode pravo na pravnu zaštitu u slučajevima ozbiljnih povreda privatnosti. Uloga Povjerenika za informacije također se širi, uz jače ovlasti nadzora i provedbe. Mozda i vise od toga jer osim ocuvanja i zastite nacionalnih informacija i prava ljudi u Australiji, ima za cilj osigurati i zastiti informacije kao “kljuc znanja” ili uvid sto vazno i neophodno zastitu nacionalne sigurnosti u danasnjem vremenu.
@@ -11,12 +11,10 @@ Uspjesno suočavanje s ovim izazovima zahtijeva više od tehničke prilagodbe; p
 
 Dakako, vazno je naglasiti da u širem kontekstu, informacijski sustavi nisu samo tehnička infrastruktura — oni su temelj organizacijske vjerodostojnosti. Informacije imaju vrijednost, značenje i kontekst, a njihova ranjivost ne proizlazi samo iz tehničkih nedostataka, već iz njihove ovisnosti o točnosti prijenosa i interpretacije. 
 
-Informacijska sigurnost stoga nije dodatak, već strukturna pretpostavka pouzdanog sustava. Stoga je cilj autora, ovaj istrazivacki rad utemelji na znanstvenim načelima teorije informacija i cybernetike. Iz ovih razloga ovaj istrazivacki rad preporučuje razvoj sigurnosno osviještene podatkovne arhitekture koja ce prepoznavati složenost i ranjivost svakog sustava koji je izradjen na modelu predlozenom u ovom radu.
-
-Takojder, pretpostavka je da ce ovakav pristup omogućiti izgraditi održivu, usklađenu i otpornu digitalnu infrastrukturu.
+Informacijska sigurnost nije dodatak, već strukturna pretpostavka pouzdanog sustava. Stoga je cilj ovog istrazivackog rada utemeljiti na znanstvenim načelima teorije informacija i cybernetike. Iz ovih razloga ovaj rad preporučuje razvoj sigurnosno osviještene podatkovne arhitekture koja ce prepoznavati složenost i ranjivost svakog sustava koji je izradjen na modelu predlozenom u ovom radu. Jedna od pretpostavki ovog rada je da ce ovakav pristup omogućiti izgraditi održivu, usklađenu i otpornu digitalnu infrastrukturu.
 
 
-U fokusu ovog istraživačkog rada je sljedece:
+U fokusu ovog istraživačkog rada je:
 1. `Semantička stabilnost i entropija informacija` - ispitati kako se značenje informacija održava ili gubi tijekom pohrane, obrade i distribucije unutar javnih informacijskih sustava.
 
 2. `Pouzdanost informacijskih sustava` - analizirati koji su kriteriji za pouzdan sustav (integritet, dostupnost, povjerljivost, verifikabilnost) u kontekstu javne uprave.
@@ -45,15 +43,14 @@ Reforma australskog Privacy Acta stavlja dodatni naglasak na vaznost javnih inst
 ## Zakonodavstvo i reforme Australskog Privacy Act 1988
 Reforma australskog Privacy Act 1988 predstavlja jednu od tematskih tocaka rasprave unutar zakonodavne i akademske zajednice, osobito u kontekstu digitalne ekonomije, sveprisutne obrade osobnih podataka i rastućih prijetnji privatnosti. 
 
-Od 2020. godine, australska vlada, putem Ureda državnog odvjetnika i u suradnji s Office of the Australian Information Commissioner (OAIC), provodi sveobuhvatnu reviziju zakona s ciljem njegove modernizacije, usklađivanja s međunarodnim standardima i jačanja prava pojedinaca. 
+Od 2020. godine, Australska vlada, putem Ureda državnog odvjetnika i u suradnji s Office of the Australian Information Commissioner (OAIC), provodi sveobuhvatnu reviziju zakona s ciljem njegove modernizacije, usklađivanja s međunarodnim standardima i jačanja prava pojedinaca. 
 
-Stoga je prva tema ove studije je napraviti presjek je Australsko zakonodavstvo u kontekstu Privacy Act 1988 i reformi koje su u tijeku. Stoga ce fokus pregleda literature biti vezan uz ovu temu, akademske radove, institucijalna izvjesca te pravne analize koje rasvjetljavanju kjlucna pitanja poput: 
-- Sto su pravni, regulativni i drustveni aspekti predlozenih izmjena zakona? 
-- Na koji nacin ce nadolazece izmjene utjecati na informacijske sustave i kakav je njihov utjecaj na data science i data inzinjersvo koje Commonwealth entiteti (javne institucije) moraju podrzati? 
-- Kakav bi mogao biti utjecaj ovih zakonskih izmjena na sposobnost regrutiranja i zadrazavanja radne snage koja bi pruzala tehnicku i integralnu ulogu pri implementaciji i zamjeni zastarjelih informacijskih sustava?
+Prva zadaca i tema ove studije je, napraviti presjek je Australsko zakonodavstvo u kontekstu Privacy Act 1988 i reformi koje su u tijeku. Fokus pregleda literature biti ce vezan uz ovu temu, akademske radove, institucijska izvjesca, te pravne analize koje rasvjetljavanju kjlucna pitanja poput: 
+- `Sto su pravni, regulativni i drustveni aspekti predlozenih izmjena zakona?` 
+- `Na koji nacin ce nadolazece izmjene utjecati na informacijske sustave i kakav je njihov utjecaj na data science i data inzinjersvo koje Commonwealth entiteti (javne institucije) moraju podrzati?`
+- `Kakav bi mogao biti utjecaj ovih zakonskih izmjena na sposobnost regrutiranja i zadrazavanja radne snage koja bi pruzala tehnicku i integralnu ulogu pri implementaciji i zamjeni zastarjelih informacijskih sustava?`
 
-
-Za obradu ove tema, biti ce koristeni ciljani pretrazivacki termini (Appendix A) kako bi se obuhvatila relevantna literatura objavljena u znanstvenim casopisima, javno dostupnim vladinim dokumentima i pravnim bazama podataka. Posebna paznja biti ce usmjerena ka temama kao sto su mehanizmi suglasnosti, transparentnost obrade podataka i nadzor nad automatiziranim odlukama kao i uloga Australskih regulatornih tijela u provedbi reformi.
+Za obradu tema ovgo rada, koristit ce se ciljani pretrazivacki termini (Appendix A) kako bi se obuhvatila relevantna literatura objavljena u znanstvenim casopisima, javno dostupnim vladinim dokumentima i pravnim bazama podataka. Posebna paznja biti ce usmjerena ka temama kao sto su mehanizmi suglasnosti, transparentnost obrade podataka i nadzor nad automatiziranim odlukama kao i uloga Australskih regulatornih tijela u provedbi reformi.
 
 
 ## Zakonodavni okvir i dizajn
@@ -69,25 +66,31 @@ Informacijske znanosti nude sofisticirane alate za razumijevanje informacija: nj
 Literatura o informacijskoj sigurnosti često se fokusira na tehničke aspekte zaštite sustava, dok rjeđe razmatra sigurnosne modele kao konceptualne alate za dizajn. Iako se okviri poput CIA trijade široko koriste, njihova primjena često ostaje površna i operativna. Teorije poput Bell-LaPadula i Biba modela nude formalne temelje za upravljanje povjerljivošću i cjelovitošću, no rijetko se integriraju u rane faze arhitektonskog i procesnog planiranja. Slično, pristupi kao što su Zero Trust ili Defense in Depth nude strateške smjernice, ali bez dublje metodološke utemeljenosti riskiraju ostati samo taktička rješenja. Nedostaje sustavna integracija sigurnosnih principa u dizajn, koja bi spojila regulatorne, organizacijske i tehničke zahtjeve u koherentan okvir razvoja informacijskih sustava. 
 
 ## Praznine u znanju
+
 - Nedovoljna integracija pravnih okvira u tehnički dizajn sustava
 - Ograničeno razumijevanje zakona kao „pozitivne“ sile u dizajnu
 - Nepovezanost između tehničkih disciplina i informacijskih znanosti u području sigurnosti i privatnosti
 
 ## Teorijski okvir
+
 Teorijski okvir oslanja se na tri glavne osi: `1) Informacijsku entropiju I redukciju nesigurnosti`, `2) semiotiku i znacenje` te `3) kibernetiku i kontrolu`
 
 ## Informacijska entropija i redukcija nesigurnosti
+
 Prema Shannonu (1948), informacije imaju mjerljivu razinu entropije — nesigurnosti. Sustavi koji prenose informacije podložni su pogreškama, gubicima i šumovima. Zakonodavni okviri mogu se interpretirati kao mehanizmi redukcije entropije, jer definiraju pravila koja stabiliziraju kontekst.
 
 ## Semiotika i značenje
+
 Prema Peirceu i Eco-u, informacije nose značenje koje je kontekstualno. Regulativa omogućava standardizaciju tog konteksta — stoga zakon djeluje i kao semiotički stabilizator, čuvajući integritet značenja informacija kroz sustave.
 
 ## Kibernetika i kontrola
+
 Wienerova kibernetika definira sustave kroz petlje povratnih informacija. Regulative stvaraju granice, ali i kanale kontrole unutar informacijskih sustava. U tom smislu, zakon je središnji element informacijskog feedbacka u organizaciji.
 
 
 # Metodolgija
 ## Dokumentarna analiza (qualitative content analysis):
+
 - Zakonodavni dokumenti (Privacy Act 1988 i predložene izmjene)
 - Vladina izvješća o cyber sigurnosti (npr. Australian Cyber Security Centre)
 - Parlamentarni zapisnici o reformama i digitalnim strategijama
@@ -135,7 +138,7 @@ Primjena koncepata iz informacijskih znanosti za modeliranje kako zakonodavni ok
 postati strukturni vodiči u arhitekturi i proceduralnom dizajnu.
 
 # Ocekivani doprinosi
-Razvoj novog konceptualnog modela koji tretira zakon kao oblik arhitektonske inteligencije, a ne samo pravne obveze.
-Teorijska integracija informacijskih znanosti i zakonske regulative u području dizajna sustava.
-Praktične smjernice za poslovne subjekte kako zakonodavne principe ugraditi u rane faze dizajna procedura i informacijskih arhitektura.
-Temelj za razvoj novih okvira edukacije na raskrižju prava, informatike i sustavnog menadžmenta
+- Razvoj novog konceptualnog modela koji tretira zakon kao oblik arhitektonske inteligencije, a ne samo pravne obveze.
+- Presjek teorijske integracije informacijskih znanosti i zakonske regulative u području dizajna sustava.
+- Praktične smjernice za poslovne subjekte kako zakonodavne principe ugraditi u rane faze dizajna procedura i informacijskih arhitektura.
+- Temelj za razvoj novih okvira edukacije na raskrižju prava, informatike i sustavnog menadžmenta
