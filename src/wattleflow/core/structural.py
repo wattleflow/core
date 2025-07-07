@@ -36,7 +36,7 @@ Structural interfaces
 # Adapter interfaces (ITarget, IAdaptee, IAdapter)
 class ITarget(IWattleflow, ABC):
     @abstractmethod
-    def request(self):
+    def request(self) -> Any:
         pass
 
 

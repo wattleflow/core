@@ -1,12 +1,7 @@
 # WattleFlow Core
 ![WattleFlow Logo](src/wattleflow/logo/wattleflow.png)
 
-
-# WattleFlow Core Framework
-A modular framework for Python, that facilitate design patterns as an architectural building blocks to enable efficient engineering.
-
-
-# Features
+---
 WattleFlow—graceful flow,
 modular, scaled with purpose,
 patterns guide the stream,
@@ -15,13 +10,35 @@ built to last and grow.
 
 ---
 
-## Key
-- Modular architecture: Allows for reusable design patterns as components, making it easier to extend and maintain ETL solutions.
-- No external dependencies: Keeps installation and integration simple.
-- Built for python software engineers: Tailored for building frameworks with minimal overhead.
+# WattleFlow Core Framework
+A modular framework for Python, that facilitate design patterns as an architectural building blocks to enable efficient architecure.
+
+## Core Concepts:
+- Design Patterns based on GoF (Gang of Four) Standards
+- Modular Architecture
+- Code Maintainability
+- Scalability
+- Minimal Dependencies within the Python Ecosystem
+
+- **Design Patterns** - The solution follows proven software engineering principles based on the internationally recognised Gang of Four (GoF) design patterns. These patterns provide standardised, reusable solutions for common architectural and development challenges. Their adoption enhances code readability, promotes consistent system design, and ensures alignment with best practices in object-oriented development.
+
+- **Modular Architecture** - The framework is following modular principles, where individual components (or interfaces) are developed, tested, and maintained independently. This enables flexibility, simplifies system evolution, and reduces the impact of changes on other parts of the solution design. Modular architecture also facilitates team collaboration by allowing parallel development across different functional units
+
+- **Code Maintainability** - The system emphasises maintainable code, which reduces technical debt and simplifies ongoing development, testing, and debugging. Clean, well-structured, and documented code ensures long-term sustainability, making it easier for new team members to onboard and for existing teams to evolve the solution without introducing instability.
+
+- **Scalablitlity** - Wattleflow is intended for scaling solutions both vertically and horizontally, ensuring that the system can efficiently handle increased workloads, higher data volumes, and a growing number of concurrent processes or users. Scalability is essential for maintaining system performance and reliability in high-demand environments, particularly in data-intensive or mission-critical operations.
 
 
-## Libraries
+- **Minimal Dependencies within the Python Ecosystem** - The solution is intentionally designed with minimal external dependencies, relying primarily on stable, well-supported components within the Python ecosystem. This reduces complexity, simplifies deployment, and minimises security risks associated with third-party packages. At the same time, it ensures compatibility with common data engineering tools and frameworks.
+
+## Design Principles
+Followign the guidelines from the book "Design Patterns: Elements of Reusable Object-Oriented Software" (commonly known as the "Gang of Four" or GoF), `Wattleflow` framework is based on the principles that have become the de facto standard in the software industry, particularly in:
+- Object-Oriented Design (OOP)
+- Development of Scalable Systems
+- Enterprise Architecture
+- Microservices and Distributed Systems
+
+## Core Libraries
     - `__init__.py`
     - `behavioral.py`
     - `concurent.py`
@@ -59,14 +76,14 @@ pip install wattleflow
 # Dev guide
 ```bash
 
-conda env remove -n core && conda create --name core python=3.8
+conda create --name core python=3.8
 
 pip install -r requirements-dev.txt
 ```
 
 
 # Documentation
-For full documentation, visit [WattleFlow](https://github.com/wattleflow/docs.git) documentation.
+When available, full documentation will be accessible at [WattleFlow](https://github.com/wattleflow/docs.git) documentation.
 
 
 # License
