@@ -2,4 +2,3 @@ build
 setuptools
 setuptools_scm
 wheel
-pdoc

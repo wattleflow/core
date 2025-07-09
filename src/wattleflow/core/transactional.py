@@ -2,7 +2,7 @@
 # Author: (wattleflow@outlook.com)
 # Copyright: (c) 2022-2024 WattleFlow
 # License: Apache 2 Licence
-# Description: This modul contains transactional pattern interfaces.
+# Description: This modul contains transactional interfaces.
 
 from abc import ABC, abstractmethod
 from datetime import datetime

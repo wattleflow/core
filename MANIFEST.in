@@ -1,2 +1,3 @@
 recursive-include docs/ *.py
 recursive-include src/ *.py
+exclude Makefile
