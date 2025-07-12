@@ -77,15 +77,15 @@ class IComponent(IWattleflow, ABC):
 
 class IComposite(IComponent, ABC):
     @abstractmethod
-    def add(self, component):
+    def add(self, component: IComponent):
         pass
 
     @abstractmethod
-    def remove(self, component):
+    def remove(self, component: IComponent):
         pass
 
     @abstractmethod
-    def get_child(self, index):
+    def get_child(self, index) -> IComponent:
         pass
 
 
@@ -99,7 +99,7 @@ class IDecorator(IComponent, ABC):
 # Facade interface
 class IFacade(IWattleflow, ABC):
     @abstractmethod
-    def operation(self):
+    def operation(self) -> bool:
         pass
 
 
