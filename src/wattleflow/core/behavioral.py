@@ -5,14 +5,7 @@
 # Description: This modul contains abstract design pattern interfaces.
 
 from abc import ABC, abstractmethod
-from typing import (
-    Any,
-    AsyncIterator,
-    Generic,
-    Iterator,
-    Optional,
-    Union
-)
+from typing import Any, AsyncIterator, Generic, Iterator, Optional, Union
 from .framework import IWattleflow, T
 
 
@@ -119,6 +112,7 @@ class IExpression(IWattleflow, ABC):
 # IIterator
 class IIterator(IWattleflow, Iterator[T], Generic[T], ABC):
     def __init__(self) -> None:
+        super().__init__()
         self._iterator: Optional[Iterator[T]] = None
 
     def __iter__(self) -> Iterator[T]:
@@ -137,6 +131,7 @@ class IIterator(IWattleflow, Iterator[T], Generic[T], ABC):
 # IAsyncIterator
 class IAsyncIterator(IWattleflow, AsyncIterator[T], Generic[T], ABC):
     def __init__(self) -> None:
+        super().__init__()
         self._iterator: Optional[AsyncIterator[T]] = None
 
     def __aiter__(self) -> AsyncIterator[T]:
@@ -261,15 +256,11 @@ class IState(IWattleflow, ABC):
     IState - State abstract interface.
     """
 
-    pass
-
 
 class IStateContext(IWattleflow, ABC):
     """
     IStateContext - State abstract interface.
     """
-
-    pass
 
 
 # Strategy interfaces
@@ -278,8 +269,6 @@ class IStrategy(IWattleflow, ABC):
     """
     IStrategy - Strategy abstract interface.
     """
-
-    pass
 
     @abstractmethod
     def execute(self, *args, **kwargs):

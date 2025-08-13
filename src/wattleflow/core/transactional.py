@@ -1,6 +1,6 @@
 # Module Name: transactional.py
 # Author: (wattleflow@outlook.com)
-# Copyright: (c) 2022-2024 WattleFlow
+# Copyright: (c) 2022-2025 WattleFlow
 # License: Apache 2 Licence
 # Description: This modul contains transactional interfaces.
 
@@ -13,12 +13,9 @@ from typing import (
     Optional,
 )
 from .framework import T
-from .behavioral import (
-    IWattleflow,
-)
+from .framework import IWattleflow
 from .creational import ISingleton
-from .structural import IAdaptee
-
+from .structural import ITarget
 
 """
 Additional Interfaces Specific to Flow-Based Programming
@@ -73,7 +70,9 @@ class ISystem(IWattleflow, ABC):
 
 
 # Document
-class IDocument(IAdaptee, Generic[T], ABC):
+class IDocument(ITarget, Generic[T], ABC):
+    __slots__ = ("_identifier", "_content", "_lineage", "_metadata")
+
     @property
     @abstractmethod
     def identifier(self) -> str:
@@ -81,6 +80,20 @@ class IDocument(IAdaptee, Generic[T], ABC):
 
     @abstractmethod
     def update_content(self, data: T):
+        pass
+
+    @abstractmethod
+    def specific_request(self) -> T:
+        pass
+
+
+# Signal
+class ISignal(ITarget, Generic[T], ABC):
+    __slots__ = ("_identifier", "_signal", "_timestamp")
+
+    @property
+    @abstractmethod
+    def identifier(self) -> str:
         pass
 
     @abstractmethod
@@ -150,11 +163,11 @@ class IRepository(IWattleflow, ABC):
         pass
 
     @abstractmethod
-    def read(self, identifier: str, *args, **kwargs) -> Any:
+    def read(self, identifier: str, *args, **kwargs) -> ITarget:
         pass
 
     @abstractmethod
-    def write(self, item: Any, *args, **kwargs) -> Any:
+    def write(self, document: ITarget, *args, **kwargs) -> bool:
         pass
 
 
@@ -175,19 +188,19 @@ class IBlackboard(IWattleflow, ABC):
         pass
 
     @abstractmethod
-    def create(self, *args, **kwargs) -> Any:
+    def create(self, *args, **kwargs) -> ITarget:
         pass
 
     @abstractmethod
-    def read(self, identifier: str, *args, **kwargs) -> Optional[Any]:
+    def read(self, identifier: str) -> ITarget:
         pass
 
     @abstractmethod
-    def register(self, repository: IRepository, *args, **kwargs):
+    def register(self, repository: IRepository):
         pass
 
     @abstractmethod
-    def write(self, item: Any, *args, **kwargs) -> str:
+    def write(self, document: ITarget, caller: IWattleflow, *args, **kwargs) -> str:
         pass
 
 
@@ -200,7 +213,7 @@ class IModule(IWattleflow, ABC):
 # Pipeline Interface
 class IPipeline(IWattleflow, ABC):
     @abstractmethod
-    def process(self, processor, item, *args, **kwargs) -> None:
+    def process(self, processor: "IProcessor", document: IDocument, *args, **kwargs) -> None:
         pass
 
 

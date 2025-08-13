@@ -28,7 +28,7 @@ Creational Interfaces
 # Abstract Factory Interface
 class IFactory(IWattleflow, ABC):
     @staticmethod
-    def create(self):
+    def create():
         pass
 
 
@@ -73,7 +73,7 @@ class IPrototype(IWattleflow, ABC):
 
 # Singleton Interface
 class ISingleton(IWattleflow):
-    import threading
+    import threading  # pylint: disable=import-outside-toplevel
     _lock = threading.Lock()
     _instances = {}
 

@@ -5,8 +5,8 @@
 # Description: This modul contains abstract structural design patterns.
 
 from abc import abstractmethod, ABC
-from .framework import IWattleflow
 from typing import Any
+from .framework import IWattleflow
 
 """
 Structural interfaces
@@ -48,6 +48,7 @@ class IAdaptee(IWattleflow, ABC):
 
 class IAdapter(ITarget, ABC):
     def __init__(self, adaptee: IAdaptee):
+        super().__init__()
         self._adaptee = adaptee
 
     @abstractmethod
@@ -99,7 +100,7 @@ class IDecorator(IComponent, ABC):
 # Facade interface
 class IFacade(IWattleflow, ABC):
     @abstractmethod
-    def operation(self) -> bool:
+    def operation(self, action: int) -> bool:
         pass
 
 

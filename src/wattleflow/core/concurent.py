@@ -106,6 +106,7 @@ class IObserverReactive(IWattleflow, ABC):
 
 class IObservableReactive(IWattleflow, ABC):
     def __init__(self):
+        super().__init__()
         self._observers: List[IObserverReactive] = []
 
     def add_observer(self, observer: IObserverReactive) -> None:
