@@ -1,27 +1,13 @@
 # Module Name: transactional.py
 # Author: (wattleflow@outlook.com)
 # Copyright: (c) 2022-2025 WattleFlow
-# License: Apache 2 Licence
-# Description: This modul contains transactional interfaces.
-
-from abc import ABC, abstractmethod
-from datetime import datetime
-from typing import (
-    Any,
-    Dict,
-    Generic,
-    Optional,
-)
-from .framework import T
-from .framework import IWattleflow
-from .creational import ISingleton
-from .structural import ITarget
+# License: Apache 2 License
+# Description: This modul contains transactional pattern interfaces.
 
 """
+This module contains all Wattleflow transactional interfaces.
+
 Additional Interfaces Specific to Flow-Based Programming
-    Actor-System
-        IActor
-        ISystem
     Blackboard
         IBlackboard
     Event-Driven
@@ -39,266 +25,209 @@ Additional Interfaces Specific to Flow-Based Programming
         IUnitOfWork
 """
 
-
-# Actor-System (IActor, ISystem)
-class IActor(IWattleflow, ABC):
-    """
-    IActor - Actor-System design pattern abstract interface.
-    Interface:
-        receive(self, message)
-    """
-
-    @abstractmethod
-    def receive(self, message):
-        pass
-
-
-class ISystem(IWattleflow, ABC):
-    """
-    ISystem - Actor-System design pattern abstract interface.
-    Interface:
-        create_actor(self, actor_class)
-    """
-
-    @abstractmethod
-    def create_actor(self, actor_class, *args, **kwargs):
-        pass
-
-    @abstractmethod
-    def send_message(self, actor, message, *args, **kwargs):
-        pass
+from abc import ABC, abstractmethod
+from datetime import datetime
+from typing import (
+    Any,
+    Dict,
+    Generic,
+    Optional,
+)
+from .framework import T
+from .framework import IWattleflow
+from .creational import ISingleton
+from .structural import IAdaptee, ITarget
 
 
 # Document
-class IDocument(ITarget, Generic[T], ABC):
-    __slots__ = ("_identifier", "_content", "_lineage", "_metadata")
+class IDocument(IAdaptee, Generic[T], ABC):
 
     @property
     @abstractmethod
-    def identifier(self) -> str:
-        pass
+    def identifier(self) -> str: ...
 
     @abstractmethod
-    def update_content(self, data: T):
-        pass
+    def update_content(self, content: T): ...
 
     @abstractmethod
-    def specific_request(self) -> T:
-        pass
+    def specific_request(self) -> T: ...
 
 
 # Signal
-class ISignal(ITarget, Generic[T], ABC):
+class ISignal(IAdaptee, Generic[T], ABC):
     __slots__ = ("_identifier", "_signal", "_timestamp")
 
     @property
     @abstractmethod
-    def identifier(self) -> str:
-        pass
+    def identifier(self) -> str: ...
 
     @abstractmethod
-    def specific_request(self) -> T:
-        pass
+    def specific_request(self) -> T: ...
 
 
-# Event-Driven Interface (IEvent, IEventListener, IDataflowComponent)
+# IEvent - (IEvent, IEventListener, IDataflowComponent) - Event-Driven
 class IEvent(ABC):
     @property
     @abstractmethod
-    def correlation_id(self) -> Optional[str]:
-        pass
+    def correlation_id(self) -> Optional[str]: ...
 
     @property
     @abstractmethod
-    def id(self) -> str:
-        pass
+    def id(self) -> str: ...
 
     @property
     @abstractmethod
-    def source(self) -> Optional[str]:
-        pass
+    def source(self) -> Optional[str]: ...
 
     @property
     @abstractmethod
-    def timestamp(self) -> datetime:
-        pass
+    def timestamp(self) -> datetime: ...
 
     @property
     @abstractmethod
-    def type(self) -> str:
-        pass
+    def type(self) -> str: ...
 
     @property
     @abstractmethod
-    def payload(self) -> Dict[str, Any]:
-        pass
+    def payload(self) -> Dict[str, Any]: ...
 
 
 class IEventListener(IWattleflow, ABC):
     @abstractmethod
-    def on_event(self, event: IEvent):
-        pass
+    def on_event(self, event: IEvent) -> None: ...
 
 
-# Event-Source Interface
 class IEventSource(IWattleflow, ABC):
     @abstractmethod
-    def register_listener(self, listener: IEventListener):
-        pass
+    def register_listener(self, listener: IEventListener) -> None: ...
 
     @abstractmethod
-    def emit_event(self, event):
-        pass
+    def emit_event(self, event: Any) -> None: ...
 
 
-# Repository interface
+# IRepository
 class IRepository(IWattleflow, ABC):
     @property
     @abstractmethod
-    def count(self) -> int:
-        pass
+    def count(self) -> int: ...
 
     @abstractmethod
-    def clear(self) -> None:
-        pass
+    def clear(self) -> None: ...
 
     @abstractmethod
-    def read(self, identifier: str, *args, **kwargs) -> ITarget:
-        pass
+    def read(self, identifier: str, *args, **kwargs) -> ITarget: ...
 
     @abstractmethod
-    def write(self, document: ITarget, *args, **kwargs) -> bool:
-        pass
+    def write(self, document: ITarget, *args, **kwargs) -> bool: ...
 
 
-# Blackboard Interface (IBlackboard, IModule)
+# IBlackboard - (IBlackboard, IModule)
 class IBlackboard(IWattleflow, ABC):
     @property
     @abstractmethod
-    def canvas(self) -> Dict[str, Any]:
-        pass
+    def canvas(self) -> Dict[str, Any]: ...
 
     @property
     @abstractmethod
-    def count(self) -> int:
-        pass
+    def count(self) -> int: ...
 
     @abstractmethod
-    def clear(self) -> None:
-        pass
+    def clear(self) -> None: ...
 
     @abstractmethod
-    def create(self, *args, **kwargs) -> ITarget:
-        pass
+    def create(self, caller: IWattleflow, *args, **kwargs) -> ITarget: ...
 
     @abstractmethod
-    def read(self, identifier: str) -> ITarget:
-        pass
+    def read(self, identifier: str) -> ITarget: ...
 
     @abstractmethod
-    def register(self, repository: IRepository):
-        pass
+    def register(self, repository: IRepository): ...
 
     @abstractmethod
-    def write(self, document: ITarget, caller: IWattleflow, *args, **kwargs) -> str:
-        pass
+    def write(
+        self,
+        caller: IWattleflow,
+        document: ITarget,
+        *args,
+        **kwargs,
+    ) -> str: ...
 
 
 class IModule(IWattleflow, ABC):
     @abstractmethod
-    def update(self, blackboard: IBlackboard, *args, **kwargs) -> None:
-        pass
+    def update(self, blackboard: IBlackboard, *args, **kwargs) -> None: ...
 
 
-# Pipeline Interface
+# IPipeline
 class IPipeline(IWattleflow, ABC):
     @abstractmethod
-    def process(self, processor: "IProcessor", document: IDocument, *args, **kwargs) -> None:
-        pass
+    def process(
+        self,
+        processor: "IProcessor",
+        document: ITarget,
+        *args,
+        **kwargs,
+    ) -> None: ...
 
 
-# IProcessor Interface
-class IProcessor(IWattleflow, ABC):
+# IProcessor
+class IProcessor(IWattleflow, Generic[T], ABC):
     @abstractmethod
-    def create_generator(self) -> Any:
-        pass
+    def create_generator(self) -> T: ...
 
     @abstractmethod
-    def start(self) -> None:
-        pass
+    def start(self) -> None: ...
 
 
-# Query interface
-class IQuery(IWattleflow, ABC):
+# IQuery
+class IQuery(IWattleflow, Generic[T], ABC):
     @abstractmethod
-    def execute(self):
-        pass
+    def execute(self) -> T: ...
 
 
 # Saga pattern
-class ISaga(IWattleflow, ABC):
+class ISaga(IWattleflow, Generic[T], ABC):
     @abstractmethod
-    def start(self, initial_state, *args, **kwargs):
-        pass
-
-    @abstractmethod
-    def handle_event(self, event, *args, **kwargs):
-        pass
+    def start(self, initial_state, *args, **kwargs) -> None: ...
 
     @abstractmethod
-    def compensate(self):
-        pass
-
-
-# Unit of Work interface
-class IUnitOfWork(IWattleflow, ABC):
-    """
-    Interface for the UnitOfWork pattern.
-    """
+    def handle_event(self, event: T, *args, **kwargs) -> None: ...
 
     @abstractmethod
-    def commit(self):
-        """Commits the current transaction."""
-        pass
+    def compensate(self) -> None: ...
+
+
+# IUnitOfWork
+class IUnitOfWork(IWattleflow, Generic[T], ABC):
+    @abstractmethod
+    def commit(self) -> None: ...
 
     @abstractmethod
-    def rollback(self):
-        """Rolls back the current transaction."""
-        pass
+    def rollback(self) -> None: ...
 
     @abstractmethod
-    def register_new(self, entity, *args, **kwargs):
-        """Registers a new entity to be added to the database."""
-        pass
+    def register_new(self, entity: T, *args, **kwargs) -> None: ...
 
     @abstractmethod
-    def register_dirty(self, entity, *args, **kwargs):
-        """Registers an existing entity that has been modified."""
-        pass
+    def register_dirty(self, entity: T, *args, **kwargs) -> None: ...
 
     @abstractmethod
-    def register_deleted(self, entity, *args, **kwargs):
-        """Registers an entity to be deleted from the database."""
-        pass
+    def register_deleted(self, entity: T, *args, **kwargs) -> None: ...
 
 
-class IScheduler(ISingleton, IEventSource):
+# IScheduler
+class IScheduler(ISingleton, Generic[T], IEventSource):
     @abstractmethod
-    def setup_orchestrator(self, *args, **kwargs):
-        pass
+    def setup_orchestrator(self, *args, **kwargs) -> None: ...
 
     @abstractmethod
-    def start_orchestration(self, parallel: bool = False):
-        pass
+    def start_orchestration(self, parallel: bool) -> None: ...
 
     @abstractmethod
-    def stop_orchestration(self):
-        pass
+    def stop_orchestration(self) -> None: ...
 
     @abstractmethod
-    def register_listener(self, listener: IEventListener) -> None:
-        pass
+    def register_listener(self, listener: IEventListener) -> None: ...
 
     @abstractmethod
-    def emit_event(self, event, **kwargs):
-        pass
+    def emit_event(self, event: T, **kwargs) -> None: ...

@@ -1,11 +1,23 @@
+"""This module contains all Wattleflow design pattern interfaces."""
+
+from .framework import (
+    IWattleflow,
+    T,  # noqa: F401
+    W,  # noqa: F401
+)
+
 from .behavioral import (
+    C,
+    R,
+    S,
     IHandler,
     ICommand,
     IInvoker,
     IExpression,
     IIterator,
+    ISyncAggregate,
     IAsyncIterator,
-    IAggregate,
+    IAsyncAggregate,
     IMediator,
     IColleague,
     IMemento,
@@ -21,7 +33,10 @@ from .behavioral import (
     IElement,
     ILogger,
 )
-from .concurent import (
+
+from .concurrent import (
+    IActor,
+    ISystem,
     IFuture,
     IPromise,
     ICallback,
@@ -48,6 +63,7 @@ from .concurent import (
     IGraphProcessing,
     ISPMDProgram,
 )
+
 from .creational import (
     IFactory,
     IBuilder,
@@ -56,11 +72,7 @@ from .creational import (
     IPrototype,
     ISingleton,
 )
-from .framework import (
-    IWattleflow,
-    T,  # noqa: F401
-    W,  # noqa: F401
-)
+
 from .structural import (
     ITarget,
     IAdaptee,
@@ -76,8 +88,6 @@ from .structural import (
     IProxy,
 )
 from .transactional import (
-    IActor,
-    ISystem,
     IDocument,
     IEventListener,
     IEventSource,
@@ -93,13 +103,20 @@ from .transactional import (
 )
 
 __all__ = [
+    "C",
+    "R",
+    "S",
+    "T",
+    "W",
     "IHandler",
     "ICommand",
     "IInvoker",
     "IExpression",
     "IIterator",
     "IAsyncIterator",
-    "IAggregate",
+    "ISyncAggregate",
+    "IAsyncIterator",
+    "IAsyncAggregate",
     "IMediator",
     "IColleague",
     "IMemento",
@@ -172,6 +189,4 @@ __all__ = [
     "ISaga",
     "IScheduler",
     "IUnitOfWork",
-    "T",
-    "W",
 ]

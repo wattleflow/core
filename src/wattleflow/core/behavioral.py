@@ -1,19 +1,15 @@
 # Module Name: behavioural.py
 # Author: (wattleflow@outlook.com)
-# Copyright: (c) 2022-2024 WattleFlow
-# License: Apache 2 Licence
-# Description: This modul contains abstract design pattern interfaces.
-
-from abc import ABC, abstractmethod
-from typing import Any, AsyncIterator, Generic, Iterator, Optional, Union
-from .framework import IWattleflow, T
-
+# Copyright: (c) 2022-2025 WattleFlow
+# License: Apache 2 License
+# Description: This modul contains behavioural pattern interfaces.
 
 """
+This module contains all Wattleflow behavioural interfaces.
+
 Behavioral Interfaces
-    Chain of Responsibility
+    Command - Chain of Responsibility
         IHandler
-    Command
         ICommand
     Interpreter
         IExpression
@@ -41,39 +37,43 @@ Behavioral Interfaces
         IElement
 """
 
+from abc import ABC, abstractmethod
+from typing import Any, AsyncIterator, Generic, Iterator, Optional, TypeVar
+from .framework import IWattleflow, T
 
-# Behavioural interfaces
-# Chain of responsiblity interfaces (IHandler, ICommand, IInvoker)
-# IHandler
+C = TypeVar("C")  # context type
+R = TypeVar("R")  # result type
+S = TypeVar("S")  # state type
+
+
+# IHandler - (IHandler) - Chain of responsiblity interfaces
 class IHandler(IWattleflow, ABC):
     """
-    IHandler - Chain of responsibilty abstract interface.
+    IHandler
 
     Interface:
-        set_next(self, handler)
-        handle(self, request)
+        set_next(handler: IHandler)
+        handle(request: Any)
     """
 
     @abstractmethod
-    def set_next(self, handler: "IHandler"):
-        pass
+    def set_next(self, handler: "IHandler") -> None: ...
 
     @abstractmethod
-    def handle(self, request):
-        pass
+    def handle(self, request: Any) -> None: ...
 
 
+# ICommand (ICommand, IInvoker) - Command interface
 class ICommand(IWattleflow, ABC):
     """
     ICommand - Chain of responsibilty abstract interface.
 
     Interface:
-        execute(self, *args, **kwargs)
+        execute(*args, **kwargs)
     """
 
     @abstractmethod
-    def execute(self, *args, **kwargs) -> Any:
-        pass
+    def execute(self, *args, **kwargs) -> Any: ...
 
 
 class IInvoker(IWattleflow, ABC):
@@ -81,35 +81,30 @@ class IInvoker(IWattleflow, ABC):
     IInvoker - Chain of responsibilty abstract interface.
 
     Interface:
-        set_command(self, command)
-        invoke(self)
+        set_command(command: ICommand) -> None
+        invoke() -> Any
     """
 
     @abstractmethod
-    def set_command(self, command: ICommand):
-        pass
+    def set_command(self, command: ICommand) -> None: ...
 
     @abstractmethod
-    def invoke(self) -> Any:
-        pass
+    def invoke(self) -> Any: ...
 
 
-# Interpreter Interface
-class IExpression(IWattleflow, ABC):
+class IExpression(IWattleflow, Generic[C, R], ABC):
     """
     IExpression - abstract interface.
 
     Interface:
-        interpret(self)
+        interpret(context: C) -> R
     """
 
     @abstractmethod
-    def interpret(self, context):
-        pass
+    def interpret(self, context: C) -> R: ...
 
 
-# Iterator interfaces (IIterator, IAsyncIterator, IAggregate)
-# IIterator
+# Iterator (IIterator, ISyncAggregate)
 class IIterator(IWattleflow, Iterator[T], Generic[T], ABC):
     def __init__(self) -> None:
         super().__init__()
@@ -124,11 +119,16 @@ class IIterator(IWattleflow, Iterator[T], Generic[T], ABC):
         return next(self._iterator)
 
     @abstractmethod
-    def create_iterator(self) -> Iterator[T]:
-        pass
+    def create_iterator(self) -> Iterator[T]: ...
 
 
-# IAsyncIterator
+# ISyncAggregate
+class ISyncAggregate(IWattleflow, Generic[T], ABC):
+    @abstractmethod
+    def create_iterator(self) -> IIterator[T]: ...
+
+
+# IAsyncIterator (IAsyncIterator, IAsyncAggregate)
 class IAsyncIterator(IWattleflow, AsyncIterator[T], Generic[T], ABC):
     def __init__(self) -> None:
         super().__init__()
@@ -143,15 +143,12 @@ class IAsyncIterator(IWattleflow, AsyncIterator[T], Generic[T], ABC):
         return await self._iterator.__anext__()
 
     @abstractmethod
-    async def create_iterator(self) -> AsyncIterator[T]:
-        pass
+    async def create_iterator(self) -> AsyncIterator[T]: ...
 
 
-# IAggregate
-class IAggregate(IWattleflow, Generic[T], ABC):
+class IAsyncAggregate(IWattleflow, Generic[T], ABC):
     @abstractmethod
-    def create_iterator(self) -> Union[IIterator[T], IAsyncIterator[T]]:
-        pass
+    async def create_iterator(self) -> IAsyncIterator[T]: ...
 
 
 # Mediator interfaces
@@ -160,12 +157,11 @@ class IMediator(IWattleflow, ABC):
     IMediator - abstract interface.
 
     Interface:
-        notify(self, sender, event)
+        notify(sender: IColleague, event: Any, **data: Any) -> None
     """
 
     @abstractmethod
-    def notify(self, sender, event):
-        pass
+    def notify(self, sender: "IColleague", event: Any, **data: Any) -> None: ...
 
 
 class IColleague(IWattleflow, ABC):
@@ -173,66 +169,57 @@ class IColleague(IWattleflow, ABC):
     IColleage - abstract interface.
 
     Interface:
-        set_mediator(self, mediator)
-        event_occurred(self, event)
+        set_mediator(mediator: IMediator) -> None
+        event_occurred(event: Any, **data: Any) -> None
     """
 
     @abstractmethod
-    def set_mediator(self, mediator):
-        pass
+    def set_mediator(self, mediator: IMediator) -> None: ...
 
     @abstractmethod
-    def event_occurred(self, event):
-        pass
+    def event_occurred(self, event: Any, **data: Any) -> None: ...
 
 
-# Memento Interfaces (IMemento, IOriginator)
-# IMemento
-class IMemento(IWattleflow, ABC):
+# IMemento - Memento Interfaces (IMemento, IOriginator)
+class IMemento(IWattleflow, Generic[S], ABC):
     """
     IMemento - abstract interface.
 
     Interface:
-        get_state(self)
+        get_state(self) -> Any
     """
 
     @abstractmethod
-    def get_state(self):
-        pass
+    def get_state(self) -> S: ...
 
 
-class IOriginator(IWattleflow, ABC):
+class IOriginator(IWattleflow, Generic[S], ABC):
     """
     IOriginator - abstract interface.
 
     Interface:
-        save_state(self)
-        restore_state(self, memento)
+        save_state() -> None
+        restore_state(memento) -> None
     """
 
     @abstractmethod
-    def save_state(self):
-        pass
+    def save_state(self) -> IMemento[S]: ...
 
     @abstractmethod
-    def restore_state(self, memento: IMemento):
-        pass
+    def restore_state(self, memento: IMemento[S]) -> None: ...
 
 
-# Observer interfaces
-# Reactive Programming Interfaces
+# Observer interfaces - Reactive Programming Interfaces
 class IObserver(IWattleflow, ABC):
     """
-    IObserver - Observer/Reactive Programming Interface desing pattern
-                abstract interface.
+    IObserver - Observer/Reactive Programming Interface
 
     Interface:
-        subscribe(self,observer)
+        update(event: Any, *args: Any, **kwargs: Any) -> None
     """
 
     @abstractmethod
-    def update(self, *args, **kwargs):
-        pass
+    def update(self, event: Any, *args: Any, **kwargs: Any) -> None: ...
 
 
 class IObservable(IWattleflow, ABC):
@@ -241,131 +228,154 @@ class IObservable(IWattleflow, ABC):
                   abstract interface.
 
     Interface:
-        subscribe(self, observer: IObserver):
+        subscribe(observer: IObserver) -> None
     """
 
     @abstractmethod
-    def subscribe(self, observer: IObserver):
-        pass
+    def subscribe(self, observer: IObserver) -> None: ...
 
 
-# State interfaces
-# State (IState, IStateContext)
+# IState (IState, IStateContext) - State interfaces
 class IState(IWattleflow, ABC):
     """
     IState - State abstract interface.
+
+    Interface:
+        def handle(self, context: "IStateContext", *args: Any, **kwargs: Any)
     """
+
+    def handle(self, context: "IStateContext", *args: Any, **kwargs: Any) -> None: ...
 
 
 class IStateContext(IWattleflow, ABC):
     """
     IStateContext - State abstract interface.
-    """
 
-
-# Strategy interfaces
-# Strategy IStrategy, IStrategyContext
-class IStrategy(IWattleflow, ABC):
-    """
-    IStrategy - Strategy abstract interface.
+    Interface:
+        set_state(state: IState) -> None: ...
+        request(*args: Any, **kwargs: Any) -> None: ...
     """
 
     @abstractmethod
-    def execute(self, *args, **kwargs):
-        pass
+    def set_state(self, state: IState) -> None: ...
+
+    @abstractmethod
+    def request(self, *args: Any, **kwargs: Any) -> None: ...
+
+
+# IStrategy - (IStrategy, IStrategyContext) - Strategy interfaces
+class IStrategy(IWattleflow, ABC):
+    """
+    IStrategy - Strategy abstract interface.
+
+    Interface:
+        execute(*args, **kwargs) -> Any
+    """
+
+    @abstractmethod
+    def execute(self, *args, **kwargs) -> Any: ...
 
 
 class IStrategyContext(IWattleflow, ABC):
     """
-    IStrategyContext - Strategy abstract interface.
+    IStrategyContext
+
+    Interface:
+        set_strategy(strategy: IStrategy) -> None
+        execute_strategy(*args, **kwargs) -> Any
     """
 
     @abstractmethod
-    def set_strategy(self, strategy: IStrategy) -> None:
-        pass
+    def set_strategy(self, strategy: IStrategy) -> None: ...
 
     @abstractmethod
-    def execute_strategy(self, *args, **kwargs) -> Any:
-        pass
+    def execute_strategy(self, *args, **kwargs) -> Any: ...
 
 
 # Template method (ITemplate)
 class ITemplate(IWattleflow, ABC):
-    def process(self):
-        """The template method defining the steps of the process."""
+    """
+    ITemplate - The template method defining the steps of the process.
+
+    Interface:
+        process() -> None
+
+        # Abstract
+        initialise(self) -> None
+        perform_task(self) -> None
+        finalise(self) -> None
+
+        # Hooks
+        before_task(self) -> None: ...  # hook (optional)
+        after_task(self) -> None: ...   # hook (optional)
+
+    """
+
+    def process(self) -> None:
         self.initialise()
-        self.perform_task()
-        self.finalise()
+        try:
+            self.perform_task()
+        finally:
+            self.finalise()
+
+    def before_task(self) -> None: ...  # hook (optional)
+    def after_task(self) -> None: ...  # hook (optional)
 
     @abstractmethod
-    def initialise(self):
-        """Step to be implemented by subclasses for initial setup."""
-        pass
+    def initialise(self) -> None: ...
 
     @abstractmethod
-    def perform_task(self):
-        """The main task to be implemented by subclasses."""
-        pass
+    def perform_task(self) -> None: ...
 
     @abstractmethod
-    def finalise(self):
-        """Step to be implemented by subclasses to clean up or finalise."""
-        pass
+    def finalise(self) -> None: ...
 
 
-# Visitor interfaces
-# Visitor (IVisitor IElement)
+# IVisitor (IVisitor IElement) - Visitor interfaces
 class IVisitor(IWattleflow, ABC):
     """
     IVisitor - Abstract interface for Visitor pattern.
+
+    Interface:
+        visit(element: IElement) -> Any
     """
 
     @abstractmethod
-    def visit(self, element: "IElement") -> Any:
-        pass
+    def visit(self, element: "IElement") -> Any: ...
 
 
 class IElement(IWattleflow, ABC):
     """
     IElement - Abstract interface for elements that accept visitors.
+
+    Interface:
+        accept(visitor: IVisitor) -> None
     """
 
     @abstractmethod
-    def accept(self, visitor: IVisitor):
-        pass
+    def accept(self, visitor: IVisitor) -> None: ...
 
 
-# ILogger interface (*)
+# ILogger interface
 class ILogger(IObservable, ABC):
 
     @abstractmethod
-    def subscribe(self, observer):
-        pass
+    def debug(self, msg: str, *args: Any, **kwargs: Any) -> None: ...
 
     @abstractmethod
-    def critical(self, msg, *args, **kwargs):
-        pass
+    def info(self, msg: str, *args: Any, **kwargs: Any) -> None: ...
 
     @abstractmethod
-    def debug(self, msg, *args, **kwargs):
-        pass
+    def warning(self, msg: str, *args: Any, **kwargs: Any) -> None: ...
 
     @abstractmethod
-    def exception(self, msg, *args, **kwargs):
-        pass
+    def error(self, msg: str, *args: Any, **kwargs: Any) -> None: ...
 
     @abstractmethod
-    def error(self, msg, *args, **kwargs):
-        pass
+    def critical(self, msg: str, *args: Any, **kwargs: Any) -> None: ...
 
     @abstractmethod
-    def fatal(self, msg, *args, **kwargs):
-        pass
+    def exception(self, msg: str, *args: Any, **kwargs: Any) -> None: ...
 
-    @abstractmethod
-    def info(self, msg, *args, **kwargs):
-        pass
-
-    @abstractmethod
-    def warning(self, level, msg, *args, **kwargs):
-        pass
+    # @abstractmethod
+    # def log(self, level: int, msg: str, *args: Any, **kwargs: Any) -> None: ...

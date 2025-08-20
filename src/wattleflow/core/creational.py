@@ -1,14 +1,12 @@
 # Module Name: core/abstract/behavioural.py
 # Author: (wattleflow@outlook.com)
-# Copyright: (c) 2024 WattleFlow
-# License: Apache 3 License
-# Description: This modul contains abstract behavioural design patterns.
-
-
-from abc import abstractmethod, ABC
-from .framework import IWattleflow
+# Copyright: (c) 2022-2025 WattleFlow
+# License: Apache 2 License
+# Description: This modul contains creational pattern interfaces.
 
 """
+This module contains all Wattleflow creational interfaces.
+
 Creational Interfaces
     Abstract Factory
         IFactory
@@ -22,6 +20,11 @@ Creational Interfaces
     Singleton
         ISingleton
 """
+
+
+import inspect
+from abc import abstractmethod, ABC
+from .framework import IWattleflow
 
 
 # Creational design patterns
@@ -74,6 +77,7 @@ class IPrototype(IWattleflow, ABC):
 # Singleton Interface
 class ISingleton(IWattleflow):
     import threading  # pylint: disable=import-outside-toplevel
+
     _lock = threading.Lock()
     _instances = {}
 
@@ -82,6 +86,10 @@ class ISingleton(IWattleflow):
         super().__init__(*args, **kwargs)
 
     def __new__(cls, *args, **kwargs):
+        # if class is apstract, don't cache
+        if inspect.isabstract(cls):
+            return super().__new__(cls)
+
         if cls not in cls._instances:
             with cls._lock:
                 if cls not in cls._instances:
