@@ -14,6 +14,9 @@ class IWattleflow(ABC):
         super().__init__()
         self.name = self.__class__.__name__
 
+    def __repr__(self) -> str:
+        return self.name
+
     # def __getattr__(self, name: str) -> Optional[object]:
     #     d = getattr(self, "__dict__", None)
     #     if d is not None and name in d:

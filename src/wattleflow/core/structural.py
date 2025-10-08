@@ -88,7 +88,8 @@ class IDecorator(IComponent, ABC):
 # IFacade
 class IFacade(IWattleflow, ABC):
     @abstractmethod
-    def operation(self, action: int) -> bool: ...
+    def operation(self, action: Any) -> Any:
+        pass
 
 
 # IFlyweight (IFlyweight, IFlyweightFactory)
