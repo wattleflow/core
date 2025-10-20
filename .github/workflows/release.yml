@@ -5,26 +5,29 @@ on:
     tags:
       - "v*"
 
+permissions:
+  contents: read
+
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Set up Python
-        uses: actions/setup-python@v3
+        uses: actions/setup-python@v5
         with:
-          python-version: "3.7.1"
+          python-version: "3.8"
 
       - name: Install dependencies
-        run: pip install build setuptools setuptools_scm wheel
+        run: pip install --upgrade pip build setuptools setuptools-scm wheel
 
       - name: Build package
         run: python -m build
 
       - name: Upload artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: python-package
           path: dist/
