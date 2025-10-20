@@ -89,6 +89,7 @@ from .structural import (
 )
 from .transactional import (
     IDocument,
+    IEvent,
     IEventListener,
     IEventSource,
     IRepository,
@@ -136,6 +137,7 @@ __all__ = [
     "ICallback",
     "IObserverReactive",
     "IObservableReactive",
+    "IEvent",
     "IEventLoop",
     "IPublisher",
     "ISubscriber",

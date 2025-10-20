@@ -1,5 +1,7 @@
+
 .vscode
 dist
 Makefile
 scripts
 src/wattleflow.egg-info
+test/.*
