@@ -139,16 +139,17 @@ class IAsyncIterator(IWattleflow, AsyncIterator[T], Generic[T], ABC):
 
     async def __anext__(self) -> T:
         if self._iterator is None:
-            self._iterator = await self.create_iterator()
+            # create_iterator is synchronous and returns an AsyncIterator
+            self._iterator = self.create_iterator()
         return await self._iterator.__anext__()
 
     @abstractmethod
-    async def create_iterator(self) -> AsyncIterator[T]: ...
+    def create_iterator(self) -> AsyncIterator[T]: ...
 
 
 class IAsyncAggregate(IWattleflow, Generic[T], ABC):
     @abstractmethod
-    async def create_iterator(self) -> IAsyncIterator[T]: ...
+    def create_iterator(self) -> IAsyncIterator[T]: ...
 
 
 # Mediator interfaces
@@ -244,6 +245,7 @@ class IState(IWattleflow, ABC):
         def handle(self, context: "IStateContext", *args: Any, **kwargs: Any)
     """
 
+    @abstractmethod
     def handle(self, context: "IStateContext", *args: Any, **kwargs: Any) -> None: ...
 
 
@@ -314,7 +316,10 @@ class ITemplate(IWattleflow, ABC):
     def process(self) -> None:
         self.initialise()
         try:
+            # call optional hooks around the main work
+            self.before_task()
             self.perform_task()
+            self.after_task()
         finally:
             self.finalise()
 
@@ -382,3 +387,7 @@ class ILogger(IObservable, ABC):
 
     # @abstractmethod
     # def log(self, level: int, msg: str, *args: Any, **kwargs: Any) -> None: ...
+
+# Mark IState.handle as @abstractmethod so implementers must implement handle. 
+# Call before_task and after_task hooks in ITemplate.process around perform_task.
+# Standardize IAsyncIterator.create_iterator to be a synchronous method returning an AsyncIterator (remove awaiting create call).
