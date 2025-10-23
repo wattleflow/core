@@ -53,6 +53,21 @@ class IDocument(IAdaptee, Generic[T], ABC):
     def specific_request(self) -> T: ...
 
 
+# IDriver
+class IDriver(IWattleflow, ABC):
+    @abstractmethod
+    def load(self) -> None:
+        pass
+
+    @abstractmethod
+    def read(self, identifer: str, **kwargs) -> Any:
+        pass
+
+    @abstractmethod
+    def write(self, document: ITarget, **kwargs) -> bool:
+        pass
+
+
 # Signal
 class ISignal(IAdaptee, Generic[T], ABC):
     __slots__ = ("_identifier", "_signal", "_timestamp")
