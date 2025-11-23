@@ -1,27 +1,10 @@
-# Module Name: core/abstract/behavioural.py
+# Module name: creational.py
 # Author: (wattleflow@outlook.com)
-# Copyright: (c) 2022-2025 WattleFlow
-# License: Apache 2 License
-# Description: This modul contains creational pattern interfaces.
-
-"""
-This module contains all Wattleflow creational interfaces.
-
-Creational Interfaces
-    Abstract Factory
-        IFactory
-    Builder
-        IBuilder
-    Factory Method
-        ICreator
-        IProduct
-    Prototype
-        IPrototype
-    Singleton
-        ISingleton
-"""
+# Copyright: © 2022–2025 WattleFlow. All rights reserved.
+# License: Apache 2 Licence
 
 
+from __future__ import annotations
 import inspect
 from abc import abstractmethod, ABC
 from .framework import IWattleflow

@@ -1,42 +1,10 @@
-# Module Name: behavioural.py
+# Module name: behavioural.py
 # Author: (wattleflow@outlook.com)
-# Copyright: (c) 2022-2025 WattleFlow
-# License: Apache 2 License
-# Description: This modul contains behavioural pattern interfaces.
+# Copyright: © 2022–2025 WattleFlow. All rights reserved.
+# License: Apache 2 Licence
 
-"""
-This module contains all Wattleflow behavioural interfaces.
 
-Behavioral Interfaces
-    Command - Chain of Responsibility
-        IHandler
-        ICommand
-    Interpreter
-        IExpression
-    Iterator
-        IIterator
-        IAggregate
-    Mediator
-        IMediator
-    Memento
-        IMemento
-        IOriginator
-    Observer
-        IObserver
-        IObservable
-    State
-        IState
-        IStateContext
-    Strategy
-        IStrategy
-        IStrategyContext
-    Template Method
-        ITemplate
-    Visitor
-        IVisitor
-        IElement
-"""
-
+from __future__ import annotations
 from abc import ABC, abstractmethod
 from typing import Any, AsyncIterator, Generic, Iterator, Optional, TypeVar
 from .framework import IWattleflow, T
@@ -388,6 +356,7 @@ class ILogger(IObservable, ABC):
     # @abstractmethod
     # def log(self, level: int, msg: str, *args: Any, **kwargs: Any) -> None: ...
 
-# Mark IState.handle as @abstractmethod so implementers must implement handle. 
+
+# Mark IState.handle as @abstractmethod so implementers must implement handle.
 # Call before_task and after_task hooks in ITemplate.process around perform_task.
 # Standardize IAsyncIterator.create_iterator to be a synchronous method returning an AsyncIterator (remove awaiting create call).

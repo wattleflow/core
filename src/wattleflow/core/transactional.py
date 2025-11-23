@@ -1,30 +1,10 @@
-# Module Name: transactional.py
+# Module name: transactional.py
 # Author: (wattleflow@outlook.com)
-# Copyright: (c) 2022-2025 WattleFlow
-# License: Apache 2 License
-# Description: This modul contains transactional pattern interfaces.
+# Copyright: © 2022–2025 WattleFlow. All rights reserved.
+# License: Apache 2 Licence
 
-"""
-This module contains all Wattleflow transactional interfaces.
 
-Additional Interfaces Specific to Flow-Based Programming
-    Blackboard
-        IBlackboard
-    Event-Driven
-        IEventListener
-        IEventSource
-    Pipeline
-        IPipeline
-    Query
-        IQuery
-    Repository
-        IRepository
-    Saga
-        ISaga
-    Unit-of-work
-        IUnitOfWork
-"""
-
+from __future__ import annotations
 from abc import ABC, abstractmethod
 from datetime import datetime
 from typing import (
@@ -133,7 +113,7 @@ class IRepository(IWattleflow, ABC):
     def read(self, identifier: str, *args, **kwargs) -> ITarget: ...
 
     @abstractmethod
-    def write(self, document: ITarget, *args, **kwargs) -> bool: ...
+    def write(self, facade: ITarget, *args, **kwargs) -> bool: ...
 
 
 # IBlackboard - (IBlackboard, IModule)
@@ -162,7 +142,7 @@ class IBlackboard(IWattleflow, ABC):
     def write(
         self,
         caller: IWattleflow,
-        document: ITarget,
+        facade: ITarget,
         *args,
         **kwargs,
     ) -> str: ...
@@ -179,7 +159,7 @@ class IPipeline(IWattleflow, ABC):
     def process(
         self,
         processor: "IProcessor",
-        document: ITarget,
+        facade: ITarget,
         *args,
         **kwargs,
     ) -> None: ...

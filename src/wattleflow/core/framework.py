@@ -1,10 +1,10 @@
-# Module Name: core/abstract/framework.py
+# Module name: framework.py
 # Author: (wattleflow@outlook.com)
-# Copyright: (c) 2022-2025 WattleFlow
-# License: Apache 2 License
-# Description: This modul contains framework pattern interfaces.
+# Copyright: © 2022–2025 WattleFlow. All rights reserved.
+# License: Apache 2 Licence
 
 
+from __future__ import annotations
 from abc import ABC
 from typing import TypeVar
 
@@ -12,17 +12,10 @@ from typing import TypeVar
 class IWattleflow(ABC):
     def __init__(self, *args, **kwargs):
         ABC.__init__(self)
-        # super().__init__()
         self.name = self.__class__.__name__
 
     def __repr__(self) -> str:
         return self.name
-
-    # def __getattr__(self, name: str) -> Optional[object]:
-    #     d = getattr(self, "__dict__", None)
-    #     if d is not None and name in d:
-    #         return d[name]
-    #     return None
 
 
 T = TypeVar("T")

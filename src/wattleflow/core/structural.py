@@ -1,34 +1,10 @@
-# Module Name: structural.py
+# Module name: structural.py
 # Author: (wattleflow@outlook.com)
-# Copyright: (c) 2022-2025 WattleFlow
-# License: Apache 2 License
-# Description: This modul contains structural pattern interfaces.
+# Copyright: © 2022–2025 WattleFlow. All rights reserved.
+# License: Apache 2 Licence
 
-"""
-This module contains all Wattleflow structural interfaces.
 
-Structural interfaces
-    Adapter
-        ITarget
-        IAdaptee
-        IAdapter
-    Bridge
-        IImplementor
-        IAbstraction
-    Composite
-        IComponent
-        IComposite
-    Decorator
-        IDecorator
-    Facade
-        IFacade
-    Flyweight
-        IFlyweight
-        IFlyweightFactory
-    Proxy
-        IProxy
-"""
-
+from __future__ import annotations
 from abc import abstractmethod, ABC
 from typing import Any, Generic
 from .framework import IWattleflow, T
