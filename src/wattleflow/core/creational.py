@@ -6,6 +6,7 @@
 
 from __future__ import annotations
 import inspect
+from typing import Any
 from abc import abstractmethod, ABC
 from .framework import IWattleflow
 
@@ -14,7 +15,7 @@ from .framework import IWattleflow
 # Abstract Factory Interface
 class IFactory(IWattleflow, ABC):
     @staticmethod
-    def create():
+    def create(**kwargs) -> Any:
         pass
 
 
