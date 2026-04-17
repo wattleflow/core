@@ -183,10 +183,6 @@ class IObservable(IWattleflow, ABC):
 # IStateMachine - State Machine interface
 class IStateMachine(IWattleflow, ABC):
     @abstractmethod
-    def __init__(self, initial: State) -> None:
-        super().__init__()
-
-    @abstractmethod
     def can(self, action: Action) -> bool: ...
 
     @abstractmethod
