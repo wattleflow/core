@@ -1,15 +1,22 @@
-"""This module contains all Wattleflow design pattern interfaces."""
+# Module name: core/__init__.py
+# Author: (W@outlook.com)
+# Copyright: © 2022–2026 W. All rights reserved.
+# License: Apache 2 Licence
 
 from .framework import (
     IWattleflow,
-    T,  # noqa: F401
-    W,  # noqa: F401
+    # var types
+    T,
+    W,
 )
 
 from .behavioral import (
-    C,
-    R,
-    S,
+    # var types
+    Action,
+    Context,
+    Result,
+    State,
+    # interfaces
     IHandler,
     ICommand,
     IInvoker,
@@ -35,6 +42,13 @@ from .behavioral import (
 )
 
 from .concurrent import (
+    # var types
+    Destination,
+    Graph,
+    Message,
+    Key,
+    Value,
+    # interfaces
     IActor,
     ISystem,
     IFuture,
@@ -101,22 +115,30 @@ from .transactional import (
     IQuery,
     ISaga,
     IScheduler,
+    ISignal,
     IUnitOfWork,
 )
 
 __all__ = [
-    "C",
-    "R",
-    "S",
-    "T",
+    # type vars
+    "Action",
+    "Context",
+    "Destination",
+    "Result",
+    "State",
+    "Graph",
+    "Message",
+    "Key",
+    "Value",
     "W",
+    "T",
+    # interfaces
     "IAbstraction",
     "IActor",
     "IAdaptee",
     "IAdapter",
     "IAsyncIterator",
     "IAsyncAggregate",
-    "IAsyncIterator",
     "IBarrier",
     "IBSPSystem",
     "ICallback",
@@ -180,7 +202,6 @@ __all__ = [
     "ICreator",
     "IPrototype",
     "ISingleton",
-    "IWattleflow",
     "ITarget",
     "IThreadPool",
     "IProxy",
@@ -192,5 +213,10 @@ __all__ = [
     "IQuery",
     "ISaga",
     "IScheduler",
+    "ISignal",
     "IUnitOfWork",
+    "IWattleflow",
 ]
+
+__author__ = "W"
+__copyright__ = "© 2022–2026 W. All rights reserved"

@@ -1,23 +1,7 @@
-# Module Name: concurrent.py
-# Author: (wattleflow@outlook.com)
-# Copyright: © 2022–2025 WattleFlow. All rights reserved.
+# Module Name: core/concurrent.py
+# Author: (IWattleflow@outlook.com)
+# Copyright: © 2022–2026 WattleFlow. All rights reserved.
 # License: Apache 2 Licence
-
-
-"""
-This module centralises abstract interfaces (ABCs) used across the project for
-concurrent/parallel patterns (actors, futures, reactive, pub-sub, queues, thread
-pools, coroutines, map-reduce, BSP, fork/join, barriers, divide-and-conquer,
-work-stealing, stencil, graph-processing, SPMD, etc).
-
-Notes:
-- Interfaces are intentionally minimal; concrete implementations should document
-  contract details (exceptions, thread-safety guarantees, return semantics).
-- IObservableReactive provides a thread-safe observer registry and snapshot
-  semantics for notifications. Notifications are protected against exceptions
-  raised by individual observers: an exception in one observer will be logged
-  and will not prevent delivering notifications to other observers.
-"""
 
 from __future__ import annotations
 from abc import ABC, abstractmethod
@@ -26,40 +10,43 @@ import logging
 from typing import Any, Callable, Iterable, List, Optional, Generic, TypeVar, Tuple
 from .framework import IWattleflow, T
 
-logger = logging.getLogger(__name__)
+__author__ = "WattleFlow"
+__copyright__ = "© 2022–2026 WattleFlow. All rights reserved"
 
-V = TypeVar("V")
-Msg = TypeVar("Msg")
+logger = logging.getLogger(__name__)
+# basic type variables for concurrent interfaces
+Key = TypeVar("Key")
+Value = TypeVar("Value")
+Message = TypeVar("Message")
+Destination = TypeVar("Destination")
 Graph = TypeVar("Graph")
 
 
 # IActor (IActor, ISystem) - Actor-System
-class IActor(IWattleflow, ABC, Generic[Msg]):
-    """Actor interface: implement receive to handle messages."""
+class IActor(IWattleflow, Generic[Message], ABC):
+    @abstractmethod
+    def receive(self, message: Message) -> None: ...
+
+
+class ISystem(IWattleflow, ABC):
+    @abstractmethod
+    def create_actor(
+        self, actor_class: type[IActor[Message]], *args, **kwargs
+    ) -> IActor[Message]: ...
 
     @abstractmethod
-    def receive(self, message: Msg) -> None: ...
-
-
-class ISystem(IWattleflow, ABC, Generic[Msg]):
-    """Actor system interface: create actors and send messages to them."""
-
-    @abstractmethod
-    def create_actor(self, actor_class: type[IActor[Msg]], *args, **kwargs) -> IActor[Msg]: ...
-
-    @abstractmethod
-    def send_message(self, actor: IActor[Msg], message: Msg, *args, **kwargs) -> None: ...
+    def send_message(self, actor: IActor[Message], message: Message, *args, **kwargs) -> None: ...
 
 
 # IFuture -(IFuture, IPromise) - Future/Promise interfaces
-class IFuture(IWattleflow, ABC, Generic[T]):
+class IFuture(IWattleflow, Generic[T], ABC):
     """Future interface: blocking retrieval of a result (with optional timeout)."""
 
     @abstractmethod
     def result(self, timeout: Optional[float] = None) -> T: ...
 
 
-class IPromise(IWattleflow, ABC, Generic[T]):
+class IPromise(IWattleflow, Generic[T], ABC):
     """Promise interface: provide a result to a corresponding future."""
 
     @abstractmethod
@@ -67,7 +54,7 @@ class IPromise(IWattleflow, ABC, Generic[T]):
 
 
 # Callback Interface
-class ICallback(IWattleflow, ABC, Generic[T]):
+class ICallback(IWattleflow, Generic[T], ABC):
     """Callback interface: call is invoked with args/kwargs and returns a value."""
 
     @abstractmethod
@@ -144,35 +131,60 @@ class IEventLoop(IWattleflow, ABC):
 
 
 # IPublisher - (IPublisher-ISubscriber) - Pub-Sub interface
-class IPublisher(IWattleflow, ABC, Generic[Msg]):
+class IPublisher(IWattleflow, ABC, Generic[Message]):
     """Publisher interface for publish-subscribe pattern."""
 
     @abstractmethod
-    def subscribe(self, subscriber: "ISubscriber[Msg]") -> None: ...
+    def subscribe(self, subscriber: "ISubscriber[Message]") -> None: ...
 
     @abstractmethod
-    def unsubscribe(self, subscriber: "ISubscriber[Msg]") -> None: ...
+    def unsubscribe(self, subscriber: "ISubscriber[Message]") -> None: ...
 
     @abstractmethod
-    def notify(self, message: Msg) -> None: ...
+    def notify(self, message: Message) -> None: ...
 
 
-class ISubscriber(IWattleflow, ABC, Generic[Msg]):
+class ISubscriber(IWattleflow, ABC, Generic[Message]):
     """Subscriber interface receiving published messages."""
 
     @abstractmethod
-    def update(self, message: Msg) -> None: ...
+    def update(self, message: Message) -> None: ...
 
 
 # Message-Queue Interface
-class IMessageQueue(IWattleflow, ABC, Generic[Msg]):
-    """Simple message queue interface. Implementations should document return semantics."""
+class IMessageQueue(IWattleflow, ABC, Generic[Message, Destination]):
+    """
+    Generic bidirectional message transport interface.
+
+    Type parameters
+    ---------------
+    Msg  — payload type (bytes, dict, str, custom object, ...)
+    Dest — destination/source routing type (str topic, URL, queue name,
+           typed address object, ...)
+
+    Examples
+    --------
+    IMessageQueue[bytes, str]          → Kafka  (bytes poruke, str topic)
+    IMessageQueue[dict,  str]          → JSON queue (dict, str queue name)
+    IMessageQueue[bytes, str]          → HTTP   (bytes body, str URL)
+    IMessageQueue[bytes, QueueAddress] → AMQP s typed adresom
+
+    Notes
+    -----
+    acknowledge() has a concrete no-op default — override only in systems
+    that require explicit commit/ack (e.g. Kafka, AMQP manual-ack mode).
+    """
 
     @abstractmethod
-    def send(self, message: Msg) -> None: ...
+    def send(self, message: Message, destination: Destination) -> None: ...
 
     @abstractmethod
-    def receive(self, timeout: Optional[float] = None) -> Optional[Msg]: ...
+    def receive(
+        self, source: Destination, timeout: Optional[float] = None
+    ) -> Optional[Message]: ...
+
+    def acknowledge(self) -> None:
+        """Commit/ack the last received message. No-op for systems without explicit ack."""
 
 
 # ThreadPool-Pool Interface
@@ -187,7 +199,7 @@ class IThreadPool(IWattleflow, ABC):
 
 
 # Coroutine Interface
-class ICoroutine(IWattleflow, ABC, Generic[T]):
+class ICoroutine(IWattleflow, Generic[T], ABC):
     """Coroutine interface (generator-like)."""
 
     @abstractmethod
@@ -201,18 +213,18 @@ class ICoroutine(IWattleflow, ABC, Generic[T]):
 
 
 # MapReduce Interface (IMapper, IReducer)
-class IMapper(IWattleflow, ABC, Generic[T, V]):
+class IMapper(IWattleflow, ABC, Generic[Key, Value]):
     """Mapper: transforms input data into (key, value) pairs."""
 
     @abstractmethod
-    def map(self, data: Iterable[V]) -> Iterable[Tuple[T, V]]: ...
+    def map(self, data: Iterable[Value]) -> Iterable[Tuple[Key, Value]]: ...
 
 
-class IReducer(IWattleflow, ABC, Generic[T, V]):
+class IReducer(IWattleflow, ABC, Generic[Key, Value]):
     """Reducer: reduces values for a key into a single (key, value) result."""
 
     @abstractmethod
-    def reduce(self, key: T, values: Iterable[V]) -> Tuple[T, V]: ...
+    def reduce(self, key: Key, values: Iterable[Value]) -> Tuple[Key, Value]: ...
 
 
 # ISuperstep - (ISuperstep, IBSPSystem) - Bulk Synchronous Parallel interfaces
@@ -223,7 +235,9 @@ class ISuperstep(IWattleflow, ABC):
 
 class IBSPSystem(IWattleflow, ABC):
     @abstractmethod
-    def run_supersteps(self, supersteps, data) -> None: ...
+    def run_supersteps(
+        self, supersteps: Iterable[ISuperstep], data: Any
+    ) -> None: ...  # BUG-08: supersteps was untyped
 
 
 # IForkJoinTask (IForkJoinTask, IForkJoinPool) - Fork/Join interfaces
@@ -232,7 +246,7 @@ class IForkJoinTask(IWattleflow, ABC):
     def fork(self) -> None: ...
 
     @abstractmethod
-    def join(self) -> None: ...
+    def join(self) -> Any: ...  # BUG-05: join must return the task result
 
 
 class IForkJoinPool(IWattleflow, ABC):
@@ -249,13 +263,17 @@ class IBarrier(IWattleflow, ABC):
 # IDivideAndConquer
 class IDivideAndConquer(IWattleflow, ABC):
     @abstractmethod
-    def divide(self, problem: Any) -> None: ...
+    def divide(
+        self, problem: Any
+    ) -> Iterable[Any]: ...  # BUG-04: must return sub-problems for combine()
 
     @abstractmethod
-    def solve_subproblem(self, subproblem: Any) -> None: ...
+    def solve_subproblem(
+        self, subproblem: Any
+    ) -> Any: ...  # BUG-04: must return solution for combine()
 
     @abstractmethod
-    def combine(self, solutions: Any) -> None: ...
+    def combine(self, solutions: Any) -> Any: ...
 
 
 # IDataParallelTask
@@ -267,7 +285,9 @@ class IDataParallelTask(IWattleflow, ABC):
 # IWorkStealingScheduler -(IWorkStealingScheduler, IWorker) - Work-Stealing interface
 class IWorkStealingScheduler(IWattleflow, ABC):
     @abstractmethod
-    def steal(self) -> None: ...
+    def steal(
+        self,
+    ) -> Optional[Callable[..., Any]]: ...  # BUG-06: steal must return the stolen task
 
 
 class IWorker(IWattleflow, ABC):
@@ -278,7 +298,7 @@ class IWorker(IWattleflow, ABC):
 # IStencil
 class IStencil(IWattleflow, ABC):
     @abstractmethod
-    def apply(self, grid, point) -> None: ...
+    def apply(self, grid: Any, point: Any) -> Any: ...  # BUG-07: must return computed stencil value
 
 
 # IGraphProcessing

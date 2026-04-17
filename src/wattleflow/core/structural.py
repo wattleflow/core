@@ -1,6 +1,6 @@
-# Module name: structural.py
+# Module name: core/structural.py
 # Author: (wattleflow@outlook.com)
-# Copyright: © 2022–2025 WattleFlow. All rights reserved.
+# Copyright: © 2022–2026 WattleFlow. All rights reserved.
 # License: Apache 2 Licence
 
 
@@ -8,6 +8,10 @@ from __future__ import annotations
 from abc import abstractmethod, ABC
 from typing import Any, Generic
 from .framework import IWattleflow, T
+
+
+__author__ = "WattleFlow"
+__copyright__ = "© 2022–2026 WattleFlow. All rights reserved"
 
 
 # IAdaptee (IAdaptee, IAdapter, ITarget) - Adapter interfaces
@@ -44,21 +48,21 @@ class IComponent(IWattleflow, Generic[T], ABC):
     def process(self, data: T) -> None: ...
 
 
-class IComposite(IComponent, ABC):
+class IComposite(IComponent[T], Generic[T], ABC):
     @abstractmethod
-    def add(self, component: IComponent) -> None: ...
+    def add(self, component: IComponent[T]) -> None: ...
 
     @abstractmethod
-    def remove(self, component: IComponent): ...
+    def remove(self, component: IComponent[T]) -> None: ...
 
     @abstractmethod
-    def get_child(self, index) -> IComponent: ...
+    def get_child(self, index: int) -> IComponent[T]: ...
 
 
 # IDecorator
-class IDecorator(IComponent, ABC):
+class IDecorator(IComponent[T], Generic[T], ABC):
     @abstractmethod
-    def set_component(self, component: IComponent) -> None: ...
+    def set_component(self, component: IComponent[T]) -> None: ...
 
 
 # IFacade

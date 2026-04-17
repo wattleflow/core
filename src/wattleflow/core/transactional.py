@@ -1,27 +1,23 @@
-# Module name: transactional.py
+# Module name: core/transactional.py
 # Author: (wattleflow@outlook.com)
-# Copyright: © 2022–2025 WattleFlow. All rights reserved.
+# Copyright: © 2022–2026 WattleFlow. All rights reserved.
 # License: Apache 2 Licence
 
 
 from __future__ import annotations
 from abc import ABC, abstractmethod
 from datetime import datetime
-from typing import (
-    Any,
-    Dict,
-    Generic,
-    Optional,
-)
-from .framework import T
-from .framework import IWattleflow
+from typing import Any, Dict, Generic, Optional
 from .creational import ISingleton
+from .framework import IWattleflow, T
 from .structural import IAdaptee, ITarget
+
+__author__ = "WattleFlow"
+__copyright__ = "© 2022–2026 WattleFlow. All rights reserved"
 
 
 # Document
 class IDocument(IAdaptee, Generic[T], ABC):
-
     @property
     @abstractmethod
     def identifier(self) -> str: ...
@@ -33,19 +29,27 @@ class IDocument(IAdaptee, Generic[T], ABC):
     def specific_request(self) -> T: ...
 
 
-# IDriver
+# IDriver (IDriver)
+
+
 class IDriver(IWattleflow, ABC):
     @abstractmethod
-    def load(self) -> None:
+    def load(self) -> None: ...
+
+    @abstractmethod
+    def close(self) -> None: ...
+
+    @abstractmethod
+    def read(self, uri: str, **kwargs) -> Any:
         pass
 
     @abstractmethod
-    def read(self, identifer: str, **kwargs) -> Any:
+    def write(self, uri: str, **kwargs) -> Any:
         pass
 
+    @classmethod
     @abstractmethod
-    def write(self, document: ITarget, **kwargs) -> bool:
-        pass
+    def metadata(cls) -> Any: ...
 
 
 # Signal

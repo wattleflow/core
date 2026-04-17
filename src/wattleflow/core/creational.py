@@ -1,22 +1,26 @@
-# Module name: creational.py
+# Module name: core/creational.py
 # Author: (wattleflow@outlook.com)
-# Copyright: © 2022–2025 WattleFlow. All rights reserved.
+# Copyright: © 2022–2026 WattleFlow. All rights reserved.
 # License: Apache 2 Licence
 
 
 from __future__ import annotations
 import inspect
+import threading
 from typing import Any
 from abc import abstractmethod, ABC
 from .framework import IWattleflow
+
+__author__ = "WattleFlow"
+__copyright__ = "© 2022–2026 WattleFlow. All rights reserved"
 
 
 # Creational design patterns
 # Abstract Factory Interface
 class IFactory(IWattleflow, ABC):
     @staticmethod
-    def create(**kwargs) -> Any:
-        pass
+    @abstractmethod
+    def create(**kwargs) -> Any: ...
 
 
 # Builder
@@ -60,8 +64,6 @@ class IPrototype(IWattleflow, ABC):
 
 # Singleton Interface
 class ISingleton(IWattleflow):
-    import threading  # pylint: disable=import-outside-toplevel
-
     _lock = threading.Lock()
     _instances = {}
 

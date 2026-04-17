@@ -3,20 +3,21 @@ requires = ["setuptools", "setuptools_scm"]
 build-backend = "setuptools.build_meta"
 
 [tool.setuptools_scm]
-write_to = "src/wattleflow/core/_version.py"
+version_file = "src/wattleflow/core/_version.py"
 
 
 [project]
 name = "wattleflow"
-version="0.0.0.31"
+dynamic = ["version"]
 description = "Wattleflow Core for Python"
 readme = "README.md"
 license = { file = "LICENSE" }
 authors = [{ name = "wattleflow", email = "wattleflow@outlook.com" }]
-keywords = ["wattleflow", "framework", "core", "library", "design", "patterns", "python", "library", "software engineering"]
+keywords = ["wattleflow", "framework", "core", "library", "design", "patterns", "python", "software engineering"]
 requires-python = ">=3.8"
 classifiers = [
     "Development Status :: 5 - Production/Stable",
+    "License :: OSI Approved :: Apache Software License",
     "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
@@ -29,24 +30,24 @@ classifiers = [
 ]
 
 [project.urls]
-homepage = "https://github.com/wattleflow/core.git"
-repository = "https://github.com/wattleflow/core.git"
-documentation = "https://github.com/wattleflow/docs.git"
+Homepage = "https://github.com/wattleflow/core.git"
+Repository = "https://github.com/wattleflow/core.git"
+Documentation = "https://github.com/wattleflow/docs.git"
 
 [tool.setuptools]
-package-dir = {"" = "src"}  
+package-dir = {"" = "src"}
 include-package-data = true
 
 [tool.setuptools.packages.find]
 where = ["src"]
 
 [tool.ruff]
-line-length = 100
-target-version = "py311"
+line-length = 120
+target-version = "py38"
 
 [tool.ruff.lint]
 # E/W = pycodestyle, F = pyflakes (Flake8 equivalent), I = isort, B = flake8-bugbear
 select = ["E", "W", "F", "I", "B"]
 # E203 - whitespace before ':' (conflicts with Black/slice notation)
 # E731 - do not assign a lambda expression (intentionally used in this project)
-ignore = ["E203", "E731", "I001"]  # I001/I003 - isort import order (intentionally not followed in this project)
+ignore = ["E203", "E731", "I001"]  # I001 - isort import order (intentionally not followed in this project)
