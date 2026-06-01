@@ -4,7 +4,6 @@ build-backend = "setuptools.build_meta"
 
 [tool.setuptools_scm]
 version_file = "src/wattleflow/core/_version.py"
-# Production builds come straight from the git tag (e.g. v0.0.0.35 -> 0.0.0.35).
 local_scheme = "no-local-version"   # no +gHASH suffix; required for PyPI uploads
 version_scheme = "no-guess-dev"     # don't invent the next version off-tag
 
@@ -46,11 +45,8 @@ where = ["src"]
 
 [tool.ruff]
 line-length = 120
-target-version = "py38"
+target-version = "py39"
 
 [tool.ruff.lint]
-# E/W = pycodestyle, F = pyflakes (Flake8 equivalent), I = isort, B = flake8-bugbear
 select = ["E", "W", "F", "I", "B"]
-# E203 - whitespace before ':' (conflicts with Black/slice notation)
-# E731 - do not assign a lambda expression (intentionally used in this project)
-ignore = ["E203", "E731", "I001"]  # I001 - isort import order (intentionally not followed in this project)
+ignore = ["E203", "E731", "I001"]
