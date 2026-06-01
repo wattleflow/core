@@ -3,15 +3,24 @@
 # Copyright: © 2022–2026 WattleFlow. All rights reserved.
 # License: Apache 2 Licence
 
-
+# --------------------------------------------------------------------------- #
+# region Imports                                                              #
+# --------------------------------------------------------------------------- #
 from __future__ import annotations
 from abc import abstractmethod, ABC
 from typing import Any, Generic
 from .framework import IWattleflow, T
-
+# --------------------------------------------------------------------------- #
+# endregion Imports                                                           #
+# --------------------------------------------------------------------------- #
 
 __author__ = "WattleFlow"
 __copyright__ = "© 2022–2026 WattleFlow. All rights reserved"
+__license__ = "Apache 2 Licence"
+
+# --------------------------------------------------------------------------- #
+# region Interfaces                                                           #
+# --------------------------------------------------------------------------- #
 
 
 # IAdaptee (IAdaptee, IAdapter, ITarget) - Adapter interfaces
@@ -87,3 +96,8 @@ class IFlyweightFactory(IWattleflow, ABC):
 class IProxy(IWattleflow, ABC):
     @abstractmethod
     def request(self) -> Any: ...
+
+
+# --------------------------------------------------------------------------- #
+# endregion Interfaces                                                        #
+# --------------------------------------------------------------------------- #

@@ -3,6 +3,9 @@
 # Copyright: © 2022–2026 WattleFlow. All rights reserved.
 # License: Apache 2 Licence
 
+# --------------------------------------------------------------------------- #
+# region Imports                                                              #
+# --------------------------------------------------------------------------- #
 from __future__ import annotations
 from abc import ABC, abstractmethod
 from threading import RLock
@@ -10,18 +13,35 @@ import logging
 from typing import Any, Callable, Iterable, List, Optional, Generic, TypeVar, Tuple
 from .framework import IWattleflow, T
 
+# --------------------------------------------------------------------------- #
+# endregion Imports                                                           #
+# --------------------------------------------------------------------------- #
+
 __author__ = "WattleFlow"
 __copyright__ = "© 2022–2026 WattleFlow. All rights reserved"
+__license__ = "Apache 2 Licence"
+__license__ = "Apache 2 Licence"
 
-logger = logging.getLogger(__name__)
+# --------------------------------------------------------------------------- #
+# region Types                                                                #
+# --------------------------------------------------------------------------- #
 # basic type variables for concurrent interfaces
 Key = TypeVar("Key")
 Value = TypeVar("Value")
 Message = TypeVar("Message")
 Destination = TypeVar("Destination")
 Graph = TypeVar("Graph")
+# --------------------------------------------------------------------------- #
+# endregion Types                                                             #
+# --------------------------------------------------------------------------- #
 
 
+logger = logging.getLogger(__name__)
+
+
+# --------------------------------------------------------------------------- #
+# region Interfaces                                                           #
+# --------------------------------------------------------------------------- #
 # IActor (IActor, ISystem) - Actor-System
 class IActor(IWattleflow, Generic[Message], ABC):
     @abstractmethod
@@ -30,9 +50,7 @@ class IActor(IWattleflow, Generic[Message], ABC):
 
 class ISystem(IWattleflow, ABC):
     @abstractmethod
-    def create_actor(
-        self, actor_class: type[IActor[Message]], *args, **kwargs
-    ) -> IActor[Message]: ...
+    def create_actor(self, actor_class: type[IActor[Message]], *args, **kwargs) -> IActor[Message]: ...
 
     @abstractmethod
     def send_message(self, actor: IActor[Message], message: Message, *args, **kwargs) -> None: ...
@@ -179,9 +197,7 @@ class IMessageQueue(IWattleflow, ABC, Generic[Message, Destination]):
     def send(self, message: Message, destination: Destination) -> None: ...
 
     @abstractmethod
-    def receive(
-        self, source: Destination, timeout: Optional[float] = None
-    ) -> Optional[Message]: ...
+    def receive(self, source: Destination, timeout: Optional[float] = None) -> Optional[Message]: ...
 
     def acknowledge(self) -> None:
         """Commit/ack the last received message. No-op for systems without explicit ack."""
@@ -235,9 +251,7 @@ class ISuperstep(IWattleflow, ABC):
 
 class IBSPSystem(IWattleflow, ABC):
     @abstractmethod
-    def run_supersteps(
-        self, supersteps: Iterable[ISuperstep], data: Any
-    ) -> None: ...  # BUG-08: supersteps was untyped
+    def run_supersteps(self, supersteps: Iterable[ISuperstep], data: Any) -> None: ...  # BUG-08: supersteps was untyped
 
 
 # IForkJoinTask (IForkJoinTask, IForkJoinPool) - Fork/Join interfaces
@@ -263,14 +277,10 @@ class IBarrier(IWattleflow, ABC):
 # IDivideAndConquer
 class IDivideAndConquer(IWattleflow, ABC):
     @abstractmethod
-    def divide(
-        self, problem: Any
-    ) -> Iterable[Any]: ...  # BUG-04: must return sub-problems for combine()
+    def divide(self, problem: Any) -> Iterable[Any]: ...  # BUG-04: must return sub-problems for combine()
 
     @abstractmethod
-    def solve_subproblem(
-        self, subproblem: Any
-    ) -> Any: ...  # BUG-04: must return solution for combine()
+    def solve_subproblem(self, subproblem: Any) -> Any: ...  # BUG-04: must return solution for combine()
 
     @abstractmethod
     def combine(self, solutions: Any) -> Any: ...
@@ -314,3 +324,8 @@ class IGraphProcessing(IWattleflow, Generic[Graph], ABC):
 class ISPMDProgram(IWattleflow, ABC):
     @abstractmethod
     def execute(self, data_partition: Any) -> None: ...
+
+
+# --------------------------------------------------------------------------- #
+# endregion Interfaces                                                        #
+# --------------------------------------------------------------------------- #

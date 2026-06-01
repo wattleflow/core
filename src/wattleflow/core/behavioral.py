@@ -3,21 +3,37 @@
 # Copyright: © 2022–2026 WattleFlow. All rights reserved.
 # License: Apache 2 Licence
 
-
+# --------------------------------------------------------------------------- #
+# region Imports                                                              #
+# --------------------------------------------------------------------------- #
 from __future__ import annotations
 from abc import ABC, abstractmethod
 from typing import Any, AsyncIterator, Generic, Iterator, Optional, TypeVar
 from .framework import IWattleflow
 
-WattleType = TypeVar("WattleType")
+# --------------------------------------------------------------------------- #
+# endregion Imports                                                           #
+# --------------------------------------------------------------------------- #
 
 __author__ = "WattleFlow"
 __copyright__ = "© 2022–2026 WattleFlow. All rights reserved"
+__license__ = "Apache 2 Licence"
 
+# --------------------------------------------------------------------------- #
+# region Types                                                                #
+# --------------------------------------------------------------------------- #
+WattleType = TypeVar("WattleType")
 Action = TypeVar("Action")  # action type
 Context = TypeVar("Context")  # context type
 Result = TypeVar("Result")  # result type
 State = TypeVar("State")  # state type
+# --------------------------------------------------------------------------- #
+# endregion Types                                                             #
+# --------------------------------------------------------------------------- #
+
+# --------------------------------------------------------------------------- #
+# region Interfaces                                                           #
+# --------------------------------------------------------------------------- #
 
 
 # IHandler - (IHandler) - Chain of responsiblity interfaces
@@ -35,7 +51,7 @@ class ICommand(IWattleflow, ABC):
     ICommand - Chain of responsibility abstract interface.
 
     Interface:
-        execute(*args, **kwargs)
+        execute(**kwargs)
     """
 
     @abstractmethod
@@ -342,3 +358,8 @@ class ILogger(IObservable, ABC):
 
     # @abstractmethod
     # def log(self, level: int, msg: str, **kwargs: Any) -> None: ...
+
+
+# --------------------------------------------------------------------------- #
+# endregion Interfaces                                                        #
+# --------------------------------------------------------------------------- #

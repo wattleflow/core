@@ -1,9 +1,12 @@
 
 .github
 .vscode
+build
 dist
 Makefile
 scripts
 src/wattleflow.egg-info
-test/
-SECURITY.md
+src/wattleflow/core/_version.py
+__pycache__/
+*.pyc
+test/*

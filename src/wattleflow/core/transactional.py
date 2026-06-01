@@ -3,7 +3,9 @@
 # Copyright: © 2022–2026 WattleFlow. All rights reserved.
 # License: Apache 2 Licence
 
-
+# --------------------------------------------------------------------------- #
+# region Imports                                                              #
+# --------------------------------------------------------------------------- #
 from __future__ import annotations
 from abc import ABC, abstractmethod
 from datetime import datetime
@@ -11,9 +13,17 @@ from typing import Any, Dict, Generic, Optional
 from .creational import ISingleton
 from .framework import IWattleflow, T
 from .structural import IAdaptee, ITarget
+# --------------------------------------------------------------------------- #
+# endregion Imports                                                           #
+# --------------------------------------------------------------------------- #
 
 __author__ = "WattleFlow"
 __copyright__ = "© 2022–2026 WattleFlow. All rights reserved"
+__license__ = "Apache 2 Licence"
+
+# --------------------------------------------------------------------------- #
+# region Interfaces                                                           #
+# --------------------------------------------------------------------------- #
 
 
 # Document
@@ -65,7 +75,7 @@ class ISignal(IAdaptee, Generic[T], ABC):
 
 
 # IEvent - (IEvent, IEventListener, IDataflowComponent) - Event-Driven
-class IEvent(ABC):
+class IEvent(IWattleflow, ABC):
     @property
     @abstractmethod
     def correlation_id(self) -> Optional[str]: ...
@@ -230,3 +240,8 @@ class IScheduler(ISingleton, Generic[T], IEventSource):
 
     @abstractmethod
     def emit_event(self, event: T, **kwargs) -> None: ...
+
+
+# --------------------------------------------------------------------------- #
+# endregion Interfaces                                                        #
+# --------------------------------------------------------------------------- #

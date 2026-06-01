@@ -1,7 +1,14 @@
-recursive-include docs/ *.py
-recursive-include src/ *.py
-exclude Makefile
-exclude SECURITY.md
-prune docs
-prune test
+global-exclude *
+
+recursive-include src/wattleflow/core *.py
+
+exclude *.log
+exclude *.tmp
+exclude *.yaml
+
 prune .github
+prune tests/
+prune data/
+prune docs/
+
+include README.md LICENSE pyproject.toml requirements-dev.txt

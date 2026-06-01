@@ -3,16 +3,26 @@
 # Copyright: © 2022–2026 WattleFlow. All rights reserved.
 # License: Apache 2 Licence
 
-
+# --------------------------------------------------------------------------- #
+# region Imports                                                              #
+# --------------------------------------------------------------------------- #
 from __future__ import annotations
 import inspect
 import threading
 from typing import Any
 from abc import abstractmethod, ABC
 from .framework import IWattleflow
+# --------------------------------------------------------------------------- #
+# endregion Imports                                                           #
+# --------------------------------------------------------------------------- #
 
 __author__ = "WattleFlow"
 __copyright__ = "© 2022–2026 WattleFlow. All rights reserved"
+__license__ = "Apache 2 Licence"
+
+# --------------------------------------------------------------------------- #
+# region Interfaces                                                           #
+# --------------------------------------------------------------------------- #
 
 
 # Creational design patterns
@@ -63,7 +73,7 @@ class IPrototype(IWattleflow, ABC):
 
 
 # Singleton Interface
-class ISingleton(IWattleflow):
+class ISingleton(IWattleflow, ABC):
     _lock = threading.Lock()
     _instances = {}
 
@@ -81,3 +91,8 @@ class ISingleton(IWattleflow):
                 if cls not in cls._instances:
                     cls._instances[cls] = super().__new__(cls)
         return cls._instances[cls]
+
+
+# --------------------------------------------------------------------------- #
+# endregion Interfaces                                                        #
+# --------------------------------------------------------------------------- #

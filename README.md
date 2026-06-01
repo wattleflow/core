@@ -1,6 +1,10 @@
 # WattleFlow Core
 ![WattleFlow Logo](src/wattleflow/logo/wattleflow.png)
 
+[![PyPI version](https://img.shields.io/pypi/v/wattleflow.svg)](https://pypi.org/project/wattleflow/)
+[![Python versions](https://img.shields.io/pypi/pyversions/wattleflow.svg)](https://pypi.org/project/wattleflow/)
+[![License](https://img.shields.io/pypi/l/wattleflow.svg)](https://github.com/wattleflow/core/blob/default/LICENSE)
+
 ---
 WattleFlow—graceful flow,
 modular, scaled with purpose,
@@ -14,9 +18,9 @@ built to last and grow.
 
 | Characteristic           | Value                                                                   |
 | ------------------------ | ----------------------------------------------------------------------- |
-| **Version**              | v0.0.0.33 (latest stable release)                                       |
+| **Version**              | [![PyPI version](https://img.shields.io/pypi/v/wattleflow.svg)](https://pypi.org/project/wattleflow/) (latest release on PyPI) |
 | **License**              | Apache 2.0 License                                                      |
-| **Python Compatibility** | Python >=3.8                                                            |
+| **Python Compatibility** | Python >=3.9                                                            |
 | **Dependencies**         | None                                                                    |
 | **Size**                 | nimble                                                                  |
 | **Documentation**        | [WattleFlow Core Documentation](https://github.com/wattleflow/docs.git) |

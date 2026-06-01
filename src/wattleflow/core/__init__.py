@@ -1,6 +1,6 @@
 # Module name: core/__init__.py
-# Author: (W@outlook.com)
-# Copyright: © 2022–2026 W. All rights reserved.
+# Author: (wattleflow@outlook.com)
+# Copyright: © 2022–2026 WattleFlow. All rights reserved.
 # License: Apache 2 Licence
 
 from .framework import (
