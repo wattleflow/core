@@ -71,7 +71,7 @@ pip install wattleflow
 ```
 
 # Usage examples
-- [Wattleflow Workflow](https://github.com/wattleflow/workflow/)
+- [Wattleflow Workflow](https://github.com/wattleflow/workflow.git)
 
 
 # Dependencies
@@ -83,4 +83,4 @@ When available, full documentation will be accessible at [WattleFlow](https://gi
 
 
 # License
-WattleFlow Core is licensed under the Apache 2.0 License. See the LICENSE file for more details.
+Wattleflow Core is licensed under the Apache 2.0 License. See the LICENSE file for more details.

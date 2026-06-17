@@ -12,7 +12,6 @@ from typing import TypeVar
 # endregion Imports                                                           #
 # --------------------------------------------------------------------------- #
 
-
 __author__ = "WattleFlow"
 __copyright__ = "© 2022–2026 WattleFlow. All rights reserved"
 __license__ = "Apache 2 Licence"
