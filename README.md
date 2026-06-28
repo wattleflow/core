@@ -18,13 +18,12 @@ built to last and grow.
 
 | Characteristic           | Value                                                                   |
 | ------------------------ | ----------------------------------------------------------------------- |
-| **Version**              | [![PyPI version](https://img.shields.io/pypi/v/wattleflow.svg)](https://pypi.org/project/wattleflow/) (latest release on PyPI) |
-| **License**              | Apache 2.0 License                                                      |
-| **Python Compatibility** | Python >=3.9                                                            |
-| **Dependencies**         | None                                                                    |
+| **Version**              | [![PyPI version](https://img.shields.io/pypi/v/wattleflow.svg)](https://pypi.org/project/wattleflow/) (latest release) |
+| **License**              | [![License](https://img.shields.io/pypi/l/wattleflow.svg)](https://github.com/wattleflow/core/blob/default/LICENSE) |
+| **Python Compatibility** | [![Python versions](https://img.shields.io/pypi/pyversions/wattleflow.svg)](https://pypi.org/project/wattleflow/)|
+| **Dependencies**         | nil |
 | **Size**                 | nimble                                                                  |
 | **Documentation**        | [WattleFlow Core Documentation](https://github.com/wattleflow/docs.git) |
-
 
 # WattleFlow Core Framework
 A modular framework for Python, that facilitates design patterns as an architectural building blocks to enable efficient architecture.
