@@ -389,7 +389,10 @@ class IUnitOfWork(IWattleflow, Generic[T], ABC):
 
 
 # IScheduler
-class IScheduler(IWattleflow, IEventSource, Generic[T], ABC):
+# IEventSource already derives from IWattleflow, so listing IWattleflow first
+# would put a base ahead of its own subclass and break C3/MRO. IScheduler stays
+# an IWattleflow through IEventSource.
+class IScheduler(IEventSource, Generic[T], ABC):
     """
     IScheduler - Scheduler / Orchestrator abstract interface (Event-Driven source).
 

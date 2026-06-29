@@ -24,6 +24,12 @@ __license__ = "Apache 2 Licence"
 # repr to every framework object. Contract enforcement lives in the design-pattern
 # interfaces, which mix in abc.ABC explicitly alongside this base.
 class IWattleflow:
+    # Root declares its only instance attribute as a slot, so subclasses that opt
+    # into __slots__ (e.g. ISignal) become truly dict-free instead of silently
+    # keeping a __dict__ via this base. Subclasses that do NOT declare __slots__
+    # are unaffected — they still receive a __dict__ exactly as before.
+    __slots__ = ("name",)
+
     def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
         self.name = self.__class__.__name__

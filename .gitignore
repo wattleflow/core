@@ -9,5 +9,4 @@ src/wattleflow.egg-info
 src/wattleflow/core/_version.py
 __pycache__/
 *.pyc
-test/*
-tests/*
+tools/category/

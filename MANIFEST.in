@@ -9,6 +9,7 @@ exclude *.yaml
 prune .github
 prune test/
 prune tests/
+prune tools/category
 prune data/
 prune docs/
 
