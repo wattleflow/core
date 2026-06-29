@@ -9,4 +9,7 @@ src/wattleflow.egg-info
 src/wattleflow/core/_version.py
 __pycache__/
 *.pyc
+
 tools/category/
+tools/naming_registry.yaml
+tools/wem_lint.py

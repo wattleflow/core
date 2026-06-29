@@ -7,10 +7,11 @@ exclude *.tmp
 exclude *.yaml
 
 prune .github
+prune data/
+prune docs/
 prune test/
 prune tests/
 prune tools/category
-prune data/
-prune docs/
 
+include tools/audit.py
 include README.md LICENSE pyproject.toml requirements-dev.txt
