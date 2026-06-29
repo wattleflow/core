@@ -32,8 +32,7 @@ Destination = TypeVar("Destination")
 Vertex = TypeVar("Vertex")  # graph vertex type
 Edge = TypeVar("Edge")  # graph edge type
 Output = TypeVar("Output")  # coroutine yield (output) type  [NFR-ORG-03]
-Input = TypeVar("Input")  # coroutine send (input) type    [NFR-ORG-03]
-Result = TypeVar("Result")  # coroutine return (result) type [NFR-ORG-03]
+Input = TypeVar("Input")  # coroutine send (input) type     [NFR-ORG-03]
 # --------------------------------------------------------------------------- #
 # endregion Types                                                             #
 # --------------------------------------------------------------------------- #
@@ -315,7 +314,7 @@ class IThreadPool(IWattleflow, ABC):
 
 
 # Coroutine Interface
-class ICoroutine(IWattleflow, Generic[Output, Input, Result], ABC):
+class ICoroutine(IWattleflow, Generic[Output, Input], ABC):
     """
     ICoroutine - Coroutine abstract interface (generator-like).
 
@@ -323,7 +322,11 @@ class ICoroutine(IWattleflow, Generic[Output, Input, Result], ABC):
     ---------------
     Output — type produced (yielded) by the coroutine on each step
     Input  — type accepted by send()
-    Result — type returned on completion (carried by StopIteration)
+
+    Note:
+        The completion value (a generator's StopIteration.value) is not exposed
+        as a method return here, so no Result parameter is declared. Re-add a
+        Result type parameter only if a method is added to surface it.
 
     Interface:
         send(value: Input) -> Output
