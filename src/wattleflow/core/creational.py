@@ -69,20 +69,6 @@ class IBuilder(IWattleflow, ABC):
 
 
 # Factory Method Interface (ICreator, IProduct)
-class IProduct(IWattleflow, ABC):
-    """
-    IProduct - Factory Method (product role) abstract interface.
-
-    The object produced by an ICreator's factory_method.
-
-    Interface:
-        operation() -> Any
-    """
-
-    @abstractmethod
-    def operation(self) -> Any: ...
-
-
 class ICreator(IWattleflow, ABC):
     """
     ICreator - Factory Method (creator role) abstract interface.
@@ -96,6 +82,20 @@ class ICreator(IWattleflow, ABC):
 
     @abstractmethod
     def factory_method(self) -> "IProduct": ...
+
+
+class IProduct(IWattleflow, ABC):
+    """
+    IProduct - Factory Method (product role) abstract interface.
+
+    The object produced by an ICreator's factory_method.
+
+    Interface:
+        operation() -> Any
+    """
+
+    @abstractmethod
+    def operation(self) -> Any: ...
 
 
 # Prototype Interface
