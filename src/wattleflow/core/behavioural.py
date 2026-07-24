@@ -8,7 +8,7 @@
 # --------------------------------------------------------------------------- #
 from __future__ import annotations
 from abc import ABC, abstractmethod
-from typing import Any, AsyncIterator, Generic, Iterator, Optional, TypeVar
+from typing import Any, AsyncIterator, Generic, Iterator, TypeVar
 from .framework import IWattleflow
 
 # --------------------------------------------------------------------------- #
@@ -22,11 +22,11 @@ __license__ = "Apache 2 Licence"
 # --------------------------------------------------------------------------- #
 # region Types                                                                #
 # --------------------------------------------------------------------------- #
-WattleType = TypeVar("WattleType")
 Action = TypeVar("Action")  # action type
 Context = TypeVar("Context")  # context type
 Result = TypeVar("Result")  # result type
 State = TypeVar("State")  # state type
+Element = TypeVar("Element")  # traversed element type  [NFR-ORG-03]
 # --------------------------------------------------------------------------- #
 # endregion Types                                                             #
 # --------------------------------------------------------------------------- #
@@ -109,91 +109,62 @@ class IExpression(IWattleflow, Generic[Context, Result], ABC):
 
 
 # Iterator (IIterator, ISyncAggregate)
-class IIterator(IWattleflow, Iterator[WattleType], Generic[WattleType], ABC):
+class IIterator(IWattleflow, Iterator[Element], ABC):
     """
     IIterator - Iterator abstract interface.
 
-    Lazily builds its underlying iterator on first use via create_iterator()
-    and delegates traversal to it.
+    An iterator that knows how to build its underlying traversal via
+    create_iterator(). The contract fixes no construction policy: laziness
+    and caching are implementation decisions (see
+    wattleflow.concrete.iterator.LazyIterator for the canonical policy).
 
     Interface:
-        create_iterator() -> Iterator[WattleType]
+        create_iterator() -> Iterator[Element]
+        __next__() -> Element   (inherited abstract, from Iterator)
     """
 
-    def __init__(self) -> None:
-        super().__init__()
-        self._iterator: Optional[Iterator[WattleType]] = None
-
-    def __iter__(self) -> Iterator[WattleType]:
-        return self
-
-    def __next__(self) -> WattleType:
-        if self._iterator is None:
-            self._iterator = self.create_iterator()
-        return next(self._iterator)
-
     @abstractmethod
-    def create_iterator(self) -> Iterator[WattleType]: ...
+    def create_iterator(self) -> Iterator[Element]: ...
 
 
-# ISyncAggregate
-class ISyncAggregate(IWattleflow, Generic[WattleType], ABC):
+class ISyncAggregate(IWattleflow, Generic[Element], ABC):
     """
     ISyncAggregate - Iterator (aggregate role) abstract interface.
 
-    A collection that knows how to produce a synchronous iterator over its
-    elements.
-
     Interface:
-        create_iterator() -> IIterator[WattleType]
+        create_iterator() -> IIterator[Element]
     """
 
     @abstractmethod
-    def create_iterator(self) -> IIterator[WattleType]: ...
+    def create_iterator(self) -> IIterator[Element]: ...
 
 
-# IAsyncIterator (IAsyncIterator, IAsyncAggregate)
-class IAsyncIterator(IWattleflow, AsyncIterator[WattleType], Generic[WattleType], ABC):
+class IAsyncIterator(IWattleflow, AsyncIterator[Element], ABC):
     """
     IAsyncIterator - Asynchronous Iterator abstract interface.
 
-    Asynchronous counterpart of IIterator. create_iterator() is synchronous and
-    returns an AsyncIterator; traversal is awaited via __anext__().
+    Asynchronous counterpart of IIterator; same contract shape, awaited
+    traversal via __anext__ (inherited abstract, from AsyncIterator).
+    Canonical lazy policy: wattleflow.concrete.iterator.LazyAsyncIterator.
 
     Interface:
-        create_iterator() -> AsyncIterator[WattleType]
+        create_iterator() -> AsyncIterator[Element]
     """
 
-    def __init__(self) -> None:
-        super().__init__()
-        self._iterator: Optional[AsyncIterator[WattleType]] = None
-
-    def __aiter__(self) -> AsyncIterator[WattleType]:
-        return self
-
-    async def __anext__(self) -> WattleType:
-        if self._iterator is None:
-            # create_iterator is synchronous and returns an AsyncIterator
-            self._iterator = self.create_iterator()
-        return await self._iterator.__anext__()
-
     @abstractmethod
-    def create_iterator(self) -> AsyncIterator[WattleType]: ...
+    def create_iterator(self) -> AsyncIterator[Element]: ...
 
 
-class IAsyncAggregate(IWattleflow, Generic[WattleType], ABC):
+class IAsyncAggregate(IWattleflow, Generic[Element], ABC):
     """
     IAsyncAggregate - Asynchronous Iterator (aggregate role) abstract interface.
 
-    A collection that knows how to produce an asynchronous iterator over its
-    elements.
-
     Interface:
-        create_iterator() -> IAsyncIterator[WattleType]
+        create_iterator() -> IAsyncIterator[Element]
     """
 
     @abstractmethod
-    def create_iterator(self) -> IAsyncIterator[WattleType]: ...
+    def create_iterator(self) -> IAsyncIterator[Element]: ...
 
 
 # Mediator interfaces

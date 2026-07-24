@@ -1,4 +1,4 @@
-# Module Name: core/concurrent.py
+# Module name: core/concurrent.py
 # Author: (wattleflow@outlook.com)
 # Copyright: © 2022–2026 WattleFlow. All rights reserved.
 # License: Apache 2 Licence
@@ -8,10 +8,8 @@
 # --------------------------------------------------------------------------- #
 from __future__ import annotations
 from abc import ABC, abstractmethod
-from threading import RLock
-import logging
-from typing import Any, Callable, Iterable, List, Optional, Generic, TypeVar, Tuple
-from .framework import IWattleflow, T
+from typing import Any, Callable, Iterable, Optional, Generic, TypeVar, Tuple
+from .framework import IWattleflow
 
 # --------------------------------------------------------------------------- #
 # endregion Imports                                                           #
@@ -33,12 +31,10 @@ Vertex = TypeVar("Vertex")  # graph vertex type
 Edge = TypeVar("Edge")  # graph edge type
 Output = TypeVar("Output")  # coroutine yield (output) type  [NFR-ORG-03]
 Input = TypeVar("Input")  # coroutine send (input) type     [NFR-ORG-03]
+Result = TypeVar("Result")  # deferred/computed value type   [NFR-ORG-03]
 # --------------------------------------------------------------------------- #
 # endregion Types                                                             #
 # --------------------------------------------------------------------------- #
-
-
-logger = logging.getLogger(__name__)
 
 
 # --------------------------------------------------------------------------- #
@@ -80,7 +76,7 @@ class ISystem(IWattleflow, ABC):
 
 
 # IFuture -(IFuture, IPromise) - Future/Promise interfaces
-class IFuture(IWattleflow, Generic[T], ABC):
+class IFuture(IWattleflow, Generic[Result], ABC):
     """
     IFuture - Future abstract interface.
 
@@ -88,14 +84,14 @@ class IFuture(IWattleflow, Generic[T], ABC):
     not yet be available, with an optional timeout.
 
     Interface:
-        result(timeout: Optional[float] = None) -> T
+        result(timeout: Optional[float] = None) -> Result
     """
 
     @abstractmethod
-    def result(self, timeout: Optional[float] = None) -> T: ...
+    def result(self, timeout: Optional[float] = None) -> Result: ...
 
 
-class IPromise(IWattleflow, Generic[T], ABC):
+class IPromise(IWattleflow, Generic[Result], ABC):
     """
     IPromise - Promise abstract interface.
 
@@ -103,26 +99,26 @@ class IPromise(IWattleflow, Generic[T], ABC):
     future will return.
 
     Interface:
-        set_result(result: T) -> None
+        set_result(result: Result) -> None
     """
 
     @abstractmethod
-    def set_result(self, result: T) -> None: ...
+    def set_result(self, result: Result) -> None: ...
 
 
 # Callback Interface
-class ICallback(IWattleflow, Generic[T], ABC):
+class ICallback(IWattleflow, Generic[Result], ABC):
     """
     ICallback - Callback abstract interface.
 
     A deferred unit of work invoked with arbitrary arguments, returning a value.
 
     Interface:
-        call(*args, **kwargs) -> T
+        call(*args, **kwargs) -> Result
     """
 
     @abstractmethod
-    def call(self, *args, **kwargs) -> T: ...
+    def call(self, *args, **kwargs) -> Result: ...
 
 
 # IObserverReactive - (IObserverReactive, IObservableReactive) - Reactive Programming Interfaces
@@ -143,12 +139,14 @@ class IObserverReactive(IWattleflow, ABC):
 
 class IObservableReactive(IWattleflow, ABC):
     """
-    IObservableReactive - Observable (reactive) base with thread-safe registration.
+    IObservableReactive - Observable (reactive) abstract interface.
 
-    Concrete base, not abstract: implementations call notify_observers(...) to
-    inform observers of events. Notifications are delivered to a snapshot of
-    registered observers in order of registration. If an observer raises, the
-    exception is logged and notification proceeds for the remaining observers.
+    Registers and unregisters observers and notifies them of events. The
+    contract deliberately fixes no delivery policy: thread-safety, delivery
+    order, and observer-failure handling are implementation decisions (see
+    wattleflow.concrete.observable.ThreadSafeObservable for the canonical
+    policy: lock-guarded registration, snapshot delivery in registration
+    order, observer exceptions logged and suppressed).
 
     Interface:
         add_observer(observer: IObserverReactive) -> None
@@ -156,41 +154,14 @@ class IObservableReactive(IWattleflow, ABC):
         notify_observers(*args, **kwargs) -> None
     """
 
-    def __init__(self) -> None:
-        super().__init__()
-        self._observers: List[IObserverReactive] = []
-        # Use RLock to allow re-entrant calls if observer callbacks interact
-        # with the observable (safer for some patterns).
-        self._lock = RLock()
+    @abstractmethod
+    def add_observer(self, observer: IObserverReactive) -> None: ...
 
-    def add_observer(self, observer: IObserverReactive) -> None:
-        """Register an observer if not already present (thread-safe)."""
-        with self._lock:
-            if observer not in self._observers:
-                self._observers.append(observer)
+    @abstractmethod
+    def remove_observer(self, observer: IObserverReactive) -> None: ...
 
-    def remove_observer(self, observer: IObserverReactive) -> None:
-        """Unregister an observer (thread-safe)."""
-        with self._lock:
-            if observer in self._observers:
-                self._observers.remove(observer)
-
-    def notify_observers(self, *args, **kwargs) -> None:
-        """
-        Notify all registered observers.
-
-        Notifications are made on a snapshot to allow concurrent modifications of
-        the observer list during notification. Exceptions from observers are
-        caught and logged; they do not stop notifications for other observers.
-        """
-        with self._lock:
-            observers_snapshot = list(self._observers)
-        for observer in observers_snapshot:
-            try:
-                observer.update(self, *args, **kwargs)
-            except Exception as exc:
-                # Log exception and continue notifying others.
-                logger.exception("Observer %r raised exception during update: %s", observer, exc)
+    @abstractmethod
+    def notify_observers(self, *args, **kwargs) -> None: ...
 
 
 # IEventLoop (IEventLoop) Event-Loop Interface
@@ -276,11 +247,14 @@ class IMessageQueue(IWattleflow, Generic[Message, Destination], ABC):
     -----
     acknowledge() has a concrete no-op default — override only in systems
     that require explicit commit/ack (e.g. Kafka, AMQP manual-ack mode).
+    Declared as an accepted contract default (Null-ack semantics): "ack is
+    optional" is part of the contract, not an implementation policy
+    (ADR-012).
 
     Interface:
         send(message: Message, destination: Destination) -> None
         receive(source: Destination, timeout: Optional[float] = None) -> Optional[Message]
-        acknowledge() -> None  # concrete no-op default
+        acknowledge() -> None  # concrete no-op default (ADR-012)
     """
 
     @abstractmethod
@@ -302,12 +276,12 @@ class IThreadPool(IWattleflow, ABC):
     future for each task, and shuts the pool down on request.
 
     Interface:
-        submit(task: Callable[..., T], *args, **kwargs) -> IFuture[T]
+        submit(task: Callable[..., Result], *args, **kwargs) -> IFuture[Result]
         shutdown(wait: bool = True, cancel_futures: bool = False) -> None
     """
 
     @abstractmethod
-    def submit(self, task: Callable[..., T], *args, **kwargs) -> IFuture[T]: ...
+    def submit(self, task: Callable[..., Result], *args, **kwargs) -> IFuture[Result]: ...
 
     @abstractmethod
     def shutdown(self, wait: bool = True, cancel_futures: bool = False) -> None: ...
@@ -400,7 +374,7 @@ class IBSPSystem(IWattleflow, ABC):
     """
 
     @abstractmethod
-    def run_supersteps(self, supersteps: Iterable[ISuperstep], data: Any) -> None: ...  # BUG-08: supersteps was untyped
+    def run_supersteps(self, supersteps: Iterable[ISuperstep], data: Any) -> None: ...
 
 
 # IForkJoinTask (IForkJoinTask, IForkJoinPool) - Fork/Join interfaces
@@ -420,7 +394,7 @@ class IForkJoinTask(IWattleflow, ABC):
     def fork(self) -> None: ...
 
     @abstractmethod
-    def join(self) -> Any: ...  # BUG-05: join must return the task result
+    def join(self) -> Any: ...
 
 
 class IForkJoinPool(IWattleflow, ABC):
@@ -434,7 +408,7 @@ class IForkJoinPool(IWattleflow, ABC):
     """
 
     @abstractmethod
-    def invoke(self, task: Any) -> Any: ...  # BUG-05b: invoke must return the task result (mirror of join)
+    def invoke(self, task: Any) -> Any: ...
 
 
 # IBarrier - Barrier Interface
@@ -468,10 +442,10 @@ class IDivideAndConquer(IWattleflow, ABC):
     """
 
     @abstractmethod
-    def divide(self, problem: Any) -> Iterable[Any]: ...  # BUG-04: must return sub-problems for combine()
+    def divide(self, problem: Any) -> Iterable[Any]: ...
 
     @abstractmethod
-    def solve_subproblem(self, subproblem: Any) -> Any: ...  # BUG-04: must return solution for combine()
+    def solve_subproblem(self, subproblem: Any) -> Any: ...
 
     @abstractmethod
     def combine(self, solutions: Any) -> Any: ...
@@ -508,7 +482,7 @@ class IWorkStealingScheduler(IWattleflow, ABC):
     @abstractmethod
     def steal(
         self,
-    ) -> Optional[Callable[..., Any]]: ...  # BUG-06: steal must return the stolen task
+    ) -> Optional[Callable[..., Any]]: ...
 
 
 class IWorker(IWattleflow, ABC):
@@ -537,7 +511,7 @@ class IStencil(IWattleflow, ABC):
     """
 
     @abstractmethod
-    def apply(self, grid: Any, point: Any) -> Any: ...  # BUG-07: must return computed stencil value
+    def apply(self, grid: Any, point: Any) -> Any: ...
 
 
 # IGraphProcessing

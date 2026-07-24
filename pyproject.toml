@@ -10,7 +10,7 @@ version_scheme = "no-guess-dev"     # don't invent the next version off-tag
 
 [project]
 name = "wattleflow"
-version = "0.0.0.44"
+version = "0.0.0.45"
 description = "Wattleflow Core for Python"
 readme = "README.md"
 license = { file = "LICENSE" }

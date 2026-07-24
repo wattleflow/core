@@ -9,8 +9,8 @@
 from __future__ import annotations
 from abc import ABC, abstractmethod
 from datetime import datetime
-from typing import Any, Dict, Generic, Optional
-from .framework import IWattleflow, T
+from typing import Any, Dict, Generic, Optional, TypeVar
+from .framework import IWattleflow
 from .structural import IAdaptee, ITarget
 # --------------------------------------------------------------------------- #
 # endregion Imports                                                           #
@@ -20,34 +20,33 @@ __author__ = "WattleFlow"
 __copyright__ = "© 2022–2026 WattleFlow. All rights reserved"
 __license__ = "Apache 2 Licence"
 
+
+# --------------------------------------------------------------------------- #
+# region Types                                                                #
+# --------------------------------------------------------------------------- #
+Content = TypeVar("Content")  # document/signal payload type      [NFR-ORG-03]
+Entity = TypeVar("Entity")  # unit-of-work tracked entity type  [NFR-ORG-03]
+Event = TypeVar("Event")  # emitted/handled event type        [NFR-ORG-03]
+Item = TypeVar("Item")  # processor work item type          [NFR-ORG-03]
+Result = TypeVar("Result")  # query result type                 [NFR-ORG-03]
+# --------------------------------------------------------------------------- #
+# endregion Types                                                             #
+# --------------------------------------------------------------------------- #
+
+
 # --------------------------------------------------------------------------- #
 # region Interfaces                                                           #
 # --------------------------------------------------------------------------- #
 
 
 # Document
-class IDocument(IAdaptee, Generic[T], ABC):
-    """
-    IDocument - Adaptable document abstract interface.
-
-    A content-bearing document exposed through the Adapter pattern (IAdaptee),
-    identified by a stable identifier and able to update its payload.
-
-    Interface:
-        identifier -> str  (property)
-        update_content(content: T) -> None
-        specific_request() -> T
-    """
-
-    @property
-    @abstractmethod
-    def identifier(self) -> str: ...
+class IDocument(IAdaptee, Generic[Content], ABC):
+    ...
 
     @abstractmethod
-    def update_content(self, content: T) -> None: ...
-
+    def update_content(self, content: Content) -> None: ...
     @abstractmethod
-    def specific_request(self) -> T: ...
+    def specific_request(self) -> Content: ...
 
 
 # IDriver
@@ -84,32 +83,11 @@ class IDriver(IWattleflow, ABC):
 
 
 # Signal
-class ISignal(IAdaptee, Generic[T], ABC):
-    """
-    ISignal - Adaptable signal abstract interface.
-
-    A read-only timestamped signal exposed through the Adapter pattern
-    (IAdaptee). Unlike IDocument it carries no mutation operation.
-
-    Interface:
-        identifier -> str  (property)
-        specific_request() -> T
-
-    Note:
-        __slots__ declares storage for concrete subclasses. It only saves memory
-        if every base in the MRO (IAdaptee, IWattleflow, ...) is also slotted;
-        otherwise instances still receive a __dict__. Kept as a subclass contract
-        — review against the actual bases before relying on the saving.
-    """
-
-    __slots__ = ("_identifier", "_signal", "_timestamp")
-
-    @property
-    @abstractmethod
-    def identifier(self) -> str: ...
+class ISignal(IAdaptee, Generic[Content], ABC):
+    ...
 
     @abstractmethod
-    def specific_request(self) -> T: ...
+    def specific_request(self) -> Content: ...
 
 
 # IEvent - (IEvent, IEventListener, IEventSource) - Event-Driven
@@ -168,22 +146,24 @@ class IEventListener(IWattleflow, ABC):
     def on_event(self, event: IEvent) -> None: ...
 
 
-class IEventSource(IWattleflow, ABC):
+class IEventSource(IWattleflow, Generic[Event], ABC):
     """
     IEventSource - Event-Driven (source role) abstract interface.
 
-    Registers listeners and emits events to them.
+    Registers listeners and emits events to them. Generic over the emitted
+    Event type; **kwargs carries emission metadata (ADR-010) so subclasses
+    need no widening override.
 
     Interface:
         register_listener(listener: IEventListener) -> None
-        emit_event(event: Any) -> None
+        emit_event(event: Event, **kwargs) -> None
     """
 
     @abstractmethod
     def register_listener(self, listener: IEventListener) -> None: ...
 
     @abstractmethod
-    def emit_event(self, event: Any) -> None: ...
+    def emit_event(self, event: Event, **kwargs) -> None: ...
 
 
 # IRepository
@@ -299,41 +279,46 @@ class IPipeline(IWattleflow, ABC):
 
 
 # IProcessor
-class IProcessor(IWattleflow, Generic[T], ABC):
+class IProcessor(IWattleflow, Generic[Item], ABC):
     """
     IProcessor - Processor abstract interface.
 
     Produces a generator of work items and starts processing them.
 
     Interface:
-        create_generator() -> T
+        create_generator() -> Item
         start() -> None
+
+    Note (ADR-011, open): the parameter denotes the produced value; the
+    return type of create_generator() is likely Iterator[Item] rather than
+    Item. Decision deferred until GenericProcessor (workflow) is reviewed —
+    the contract shape is preserved unchanged here.
     """
 
     @abstractmethod
-    def create_generator(self) -> T: ...
+    def create_generator(self) -> Item: ...
 
     @abstractmethod
     def start(self) -> None: ...
 
 
 # IQuery
-class IQuery(IWattleflow, Generic[T], ABC):
+class IQuery(IWattleflow, Generic[Result], ABC):
     """
     IQuery - Query Object abstract interface.
 
     Encapsulates a query that yields a typed result when executed.
 
     Interface:
-        execute() -> T
+        execute() -> Result
     """
 
     @abstractmethod
-    def execute(self) -> T: ...
+    def execute(self) -> Result: ...
 
 
 # Saga pattern
-class ISaga(IWattleflow, Generic[T], ABC):
+class ISaga(IWattleflow, Generic[Event], ABC):
     """
     ISaga - Saga abstract interface.
 
@@ -342,7 +327,7 @@ class ISaga(IWattleflow, Generic[T], ABC):
 
     Interface:
         start(initial_state, *args, **kwargs) -> None
-        handle_event(event: T, *args, **kwargs) -> None
+        handle_event(event: Event, *args, **kwargs) -> None
         compensate() -> None
     """
 
@@ -350,14 +335,14 @@ class ISaga(IWattleflow, Generic[T], ABC):
     def start(self, initial_state, *args, **kwargs) -> None: ...
 
     @abstractmethod
-    def handle_event(self, event: T, *args, **kwargs) -> None: ...
+    def handle_event(self, event: Event, *args, **kwargs) -> None: ...
 
     @abstractmethod
     def compensate(self) -> None: ...
 
 
 # IUnitOfWork
-class IUnitOfWork(IWattleflow, Generic[T], ABC):
+class IUnitOfWork(IWattleflow, Generic[Entity], ABC):
     """
     IUnitOfWork - Unit of Work abstract interface.
 
@@ -367,9 +352,9 @@ class IUnitOfWork(IWattleflow, Generic[T], ABC):
     Interface:
         commit() -> None
         rollback() -> None
-        register_new(entity: T, *args, **kwargs) -> None
-        register_dirty(entity: T, *args, **kwargs) -> None
-        register_deleted(entity: T, *args, **kwargs) -> None
+        register_new(entity: Entity, *args, **kwargs) -> None
+        register_dirty(entity: Entity, *args, **kwargs) -> None
+        register_deleted(entity: Entity, *args, **kwargs) -> None
     """
 
     @abstractmethod
@@ -379,38 +364,32 @@ class IUnitOfWork(IWattleflow, Generic[T], ABC):
     def rollback(self) -> None: ...
 
     @abstractmethod
-    def register_new(self, entity: T, *args, **kwargs) -> None: ...
+    def register_new(self, entity: Entity, *args, **kwargs) -> None: ...
 
     @abstractmethod
-    def register_dirty(self, entity: T, *args, **kwargs) -> None: ...
+    def register_dirty(self, entity: Entity, *args, **kwargs) -> None: ...
 
     @abstractmethod
-    def register_deleted(self, entity: T, *args, **kwargs) -> None: ...
+    def register_deleted(self, entity: Entity, *args, **kwargs) -> None: ...
 
 
 # IScheduler
-# IEventSource already derives from IWattleflow, so listing IWattleflow first
-# would put a base ahead of its own subclass and break C3/MRO. IScheduler stays
-# an IWattleflow through IEventSource.
-class IScheduler(IEventSource, Generic[T], ABC):
+# IEventSource already derives from IWattleflow; IScheduler stays an
+# IWattleflow through IEventSource (C3/MRO note unchanged).
+class IScheduler(IEventSource[Event], ABC):
     """
     IScheduler - Scheduler / Orchestrator abstract interface (Event-Driven source).
 
-    Orchestrates execution of work and emits lifecycle events. A pure contract:
-    the single-instance (singleton) policy, if required, belongs on the concrete
-    implementation (e.g. `class Scheduler(IScheduler, ISingleton)`), not here.
+    Orchestrates execution of work and emits lifecycle events. A pure
+    contract: the single-instance policy, if required, belongs on the
+    concrete implementation (e.g. `class Scheduler(Wattleflow, IScheduler[Event],
+    Singleton)`), not here.
 
     Interface:
         setup_orchestrator(*args, **kwargs) -> None
         start_orchestration(parallel: bool) -> None
         stop_orchestration() -> None
-        emit_event(event: T, **kwargs) -> None   # generic-typed override of IEventSource
-        (register_listener inherited from IEventSource)
-
-    Note:
-        emit_event overrides IEventSource.emit_event(event: Any), narrowing to
-        event: T and widening with **kwargs (LSP-safe widening). Alternative:
-        make IEventSource generic and drop this override entirely — open decision.
+        (register_listener, emit_event inherited from IEventSource[Event])
     """
 
     @abstractmethod
@@ -421,9 +400,6 @@ class IScheduler(IEventSource, Generic[T], ABC):
 
     @abstractmethod
     def stop_orchestration(self) -> None: ...
-
-    @abstractmethod
-    def emit_event(self, event: T, **kwargs) -> None: ...
 
 
 # --------------------------------------------------------------------------- #

@@ -3,15 +3,25 @@
 # Copyright: © 2022–2026 WattleFlow. All rights reserved.
 # License: Apache 2 Licence
 
+
 # --------------------------------------------------------------------------- #
 # region Imports                                                              #
 # --------------------------------------------------------------------------- #
 from __future__ import annotations
-from abc import abstractmethod, ABC
-from typing import Any, Generic
-from .framework import IWattleflow, T
+from abc import ABC, abstractmethod
+from typing import Any, Generic, TypeVar
+from .framework import IWattleflow
 # --------------------------------------------------------------------------- #
 # endregion Imports                                                           #
+# --------------------------------------------------------------------------- #
+
+# --------------------------------------------------------------------------- #
+# region Types                                                                #
+# --------------------------------------------------------------------------- #
+Element = TypeVar("Element")  # part-whole element type      [NFR-ORG-03]
+Extrinsic = TypeVar("Extrinsic")  # flyweight extrinsic state    [NFR-ORG-03]
+# --------------------------------------------------------------------------- #
+# endregion Types                                                             #
 # --------------------------------------------------------------------------- #
 
 __author__ = "WattleFlow"
@@ -28,22 +38,24 @@ class IAdaptee(IWattleflow, ABC):
     """
     IAdaptee - Adapter (adaptee role) abstract interface.
 
-    The object an ITarget client reaches through a wrapper. By design
-    specific_request returns the adaptee itself (identity): a wrapper calls it to
-    obtain the underlying object and then delegates to it. The concrete
-    `return self` is intentional — its known subclasses (Document, Wattle) follow
-    the same identity contract — not a placeholder.
+    The object a client reaches through a wrapper. specific_request() yields
+    what the adaptee offers to the wrapping side; the return type is Any at
+    the contract level and subclasses narrow it covariantly (IDocument and
+    ISignal narrow to their content type; an identity adaptee may narrow to
+    its own type and return self). The former concrete identity default
+    (`return self`) was an implementation policy and now lives with concrete
+    identity adaptees (ADR-009).
 
     Interface:
-        specific_request() -> IAdaptee   # concrete default; returns self (identity)
+        specific_request() -> Any
     """
 
-    # Holds no instance state of its own; an empty slot tuple keeps the
-    # ISignal → IAdaptee → IWattleflow chain dict-free (see ISignal.__slots__).
+    # Holds no instance state; empty slots keep slotted subclass chains
+    # (ISignal → IAdaptee → IWattleflow) dict-free.
     __slots__ = ()
 
-    def specific_request(self) -> "IAdaptee":
-        return self
+    @abstractmethod
+    def specific_request(self) -> Any: ...
 
 
 class ITarget(IWattleflow, ABC):
@@ -63,23 +75,26 @@ class ITarget(IWattleflow, ABC):
 
 class IAdapter(IWattleflow, ABC):
     """
-    IAdapter - Adapter (adapter role) base.
+    IAdapter - Adapter (adapter role) abstract interface.
 
-    Holds the wrapped IAdaptee. Adapter and Target are kept deliberately
-    separate: the ITarget (e.g. a Facade) is what clients call, while an adapter
-    only stores the adaptee — so this base does not inherit ITarget or declare
-    request(). Concrete base, not abstract.
+    Wraps an IAdaptee. Adapter and Target are deliberately separate: the
+    ITarget (e.g. a Facade) is what clients call; an adapter's own contract
+    is only that it exposes the adaptee it wraps. How the adaptee is stored
+    (constructor injection, lazy resolution, ...) is an implementation
+    decision.
 
-    Currently a catalog interface with no implementations: the document layer
-    delegates to the adaptee directly (see concrete/document.py), so no adapter
-    is needed while every adaptee already conforms to IAdaptee. Reintroduce a
-    concrete adapter only to wrap a FOREIGN (non-IAdaptee) object, with real
-    per-type translation in request().
+    Currently a catalog interface with no implementations: the document
+    layer delegates to the adaptee directly (see concrete/document.py).
+    Implement it only to wrap a FOREIGN (non-IAdaptee) object, with real
+    per-type translation.
+
+    Interface:
+        adaptee -> IAdaptee  (read-only property)
     """
 
-    def __init__(self, adaptee: IAdaptee) -> None:
-        super().__init__()
-        self._adaptee = adaptee
+    @property
+    @abstractmethod
+    def adaptee(self) -> IAdaptee: ...
 
 
 # IImplementor (IImplementor, IAbstraction) - Bridge interfaces
@@ -114,62 +129,29 @@ class IAbstraction(IWattleflow, ABC):
 
 
 # IComponent (IComponent, IComposite) - Composite interface
-class IComponent(IWattleflow, Generic[T], ABC):
-    """
-    IComponent - Composite (component role) abstract interface.
-
-    Common interface for both leaves and composites in a part-whole tree.
-
-    Interface:
-        process(data: T) -> None
-    """
+class IComponent(IWattleflow, Generic[Element], ABC):
+    ...
 
     @abstractmethod
-    def process(self, data: T) -> None: ...
+    def process(self, data: Element) -> None: ...
 
 
-class IComposite(IComponent[T], Generic[T], ABC):
-    """
-    IComposite - Composite (composite role) abstract interface.
-
-    A component that contains children and manages them uniformly with leaves.
-
-    Interface:
-        add(component: IComponent[T]) -> None
-        remove(component: IComponent[T]) -> None
-        get_child(index: int) -> IComponent[T]
-
-    Note:
-        `Generic[T]` is redundant here — IComponent[T] already parameterises the
-        class over T — kept only for stylistic symmetry; harmless.
-    """
+class IComposite(IComponent[Element], ABC):
+    ...
 
     @abstractmethod
-    def add(self, component: IComponent[T]) -> None: ...
+    def add(self, component: IComponent[Element]) -> None: ...
+    @abstractmethod
+    def remove(self, component: IComponent[Element]) -> None: ...
+    @abstractmethod
+    def get_child(self, index: int) -> IComponent[Element]: ...
+
+
+class IDecorator(IComponent[Element], ABC):
+    ...
 
     @abstractmethod
-    def remove(self, component: IComponent[T]) -> None: ...
-
-    @abstractmethod
-    def get_child(self, index: int) -> IComponent[T]: ...
-
-
-# IDecorator
-class IDecorator(IComponent[T], Generic[T], ABC):
-    """
-    IDecorator - Decorator abstract interface.
-
-    Wraps an IComponent to add behaviour while preserving its interface.
-
-    Interface:
-        set_component(component: IComponent[T]) -> None
-
-    Note:
-        `Generic[T]` is redundant alongside IComponent[T]; kept for symmetry.
-    """
-
-    @abstractmethod
-    def set_component(self, component: IComponent[T]) -> None: ...
+    def set_component(self, component: IComponent[Element]) -> None: ...
 
 
 # IFacade
@@ -187,20 +169,11 @@ class IFacade(IWattleflow, ABC):
     def operation(self, action: Any) -> Any: ...
 
 
-# IFlyweight (IFlyweight, IFlyweightFactory)
-class IFlyweight(IWattleflow, Generic[T], ABC):
-    """
-    IFlyweight - Flyweight abstract interface.
-
-    A shared object holding intrinsic state; extrinsic state is supplied per
-    call so many contexts can share one instance.
-
-    Interface:
-        operation(extrinsic_state: T) -> None
-    """
+class IFlyweight(IWattleflow, Generic[Extrinsic], ABC):
+    ...
 
     @abstractmethod
-    def operation(self, extrinsic_state: T) -> None: ...
+    def operation(self, extrinsic_state: Extrinsic) -> None: ...
 
 
 class IFlyweightFactory(IWattleflow, ABC):
