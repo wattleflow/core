@@ -1,26 +1,24 @@
 [build-system]
-requires = ["setuptools", "setuptools_scm"]
+# setuptools>=77 is required for PEP 639 license expressions
+# (license = "..." + license-files), which emit Metadata-Version 2.4.
+requires = ["setuptools>=77"]
 build-backend = "setuptools.build_meta"
-
-[tool.setuptools_scm]
-version_file = "src/wattleflow/core/_version.py"
-local_scheme = "no-local-version"   # no +gHASH suffix; required for PyPI uploads
-version_scheme = "no-guess-dev"     # don't invent the next version off-tag
-
 
 [project]
 name = "wattleflow"
-version = "0.0.0.45"
+# Version is set manually and must match the git tag pushed for the release.
+version = "0.0.0.46"
 description = "Wattleflow Core for Python"
 readme = "README.md"
-license = { file = "LICENSE" }
+license = "Apache-2.0"
+license-files = ["LICENSE"]
 authors = [{ name = "wattleflow", email = "wattleflow@outlook.com" }]
 keywords = ["wattleflow", "framework", "core", "library", "design", "patterns", "python", "software engineering"]
 requires-python = ">=3.9"
+# Intentionally empty: the framework depends on the standard library only.
+dependencies = []
 classifiers = [
-    "Development Status :: 5 - Production/Stable",
-    "License :: OSI Approved :: Apache Software License",
-    "Programming Language :: Python :: 3.9",
+    "Development Status :: 4 - Beta",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
@@ -31,10 +29,20 @@ classifiers = [
     "Topic :: Software Development :: Libraries :: Python Modules",
 ]
 
+[project.optional-dependencies]
+dev = [
+    "build",
+    "setuptools>=77",
+    "wheel"
+]
+#    "ruff",
+#    "twine>=6.1",   # older twine rejects Metadata-Version 2.4
+
 [project.urls]
-Homepage = "https://github.com/wattleflow/core.git"
-Repository = "https://github.com/wattleflow/core.git"
-Documentation = "https://github.com/wattleflow/docs.git"
+Homepage = "https://github.com/wattleflow/core"
+Repository = "https://github.com/wattleflow/core"
+Documentation = "https://github.com/wattleflow/documentation"
+Issues = "https://github.com/wattleflow/core/issues"
 
 [tool.setuptools]
 package-dir = {"" = "src"}
@@ -42,11 +50,19 @@ include-package-data = true
 
 [tool.setuptools.packages.find]
 where = ["src"]
+# `wattleflow` is an implicit namespace package (no __init__.py) so that sibling
+# distributions can ship wattleflow.workflow, wattleflow.processors, etc.
+# This distribution owns wattleflow.core only — the explicit include keeps any
+# other directory under src/wattleflow (e.g. logo/) out of the wheel.
+include = ["wattleflow.core*"]
+namespaces = true
 
 [tool.ruff]
 line-length = 120
 target-version = "py39"
 
 [tool.ruff.lint]
-select = ["E", "W", "F", "I", "B"]
-ignore = ["E203", "E731", "I001"]
+# "I" (isort) is deliberately not selected: src/ currently has 5 I001 findings.
+# Enable it together with `ruff check --select I --fix src/`.
+select = ["E", "W", "F", "B"]
+ignore = ["E203", "E731"]

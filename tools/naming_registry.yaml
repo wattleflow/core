@@ -1,0 +1,48 @@
+# --------------------------------------------------------------------------- #
+# NFR-ORG-03 — controlled vocabulary for TypeVar (generic parameter) names.
+# Merge this block into tools/naming_registry.yaml (top level).
+#
+# Keys read by wem_lint.TypeVarRule:
+#   type_vars.roles         — canonical role nouns (criterion 1)
+#   type_vars.synonyms      — synonym -> canonical role (criterion 6)
+#   type_vars.grandfathered — branded names tolerated as WARN pending ADR
+#   acronyms (top level)    — shared with NFR-ORG-02 (criterion 4); do NOT duplicate
+#
+# NOT a registry concern in this version of the linter (handled in code, not config):
+#   * mechanism suffixes (T/Type/_t)  -> TypeVarRule._mechanism_suffix
+#   * the bare unconstrained 'T'       -> derived from AST via _is_constrained
+#     (a single-letter name is allowed ONLY when the TypeVar has no bound and no
+#      constraints; a bounded TypeVar like TypeVar("X", bound=...) must be named
+#      from `roles`).
+# --------------------------------------------------------------------------- #
+type_vars:
+  # Canonical role nouns. A TypeVar names the role the type plays in the
+  # contract, not the mechanism. Extend ONLY via ADR.
+  roles:
+    - Key
+    - Value
+    - Message
+    - Destination
+    - Context
+    - Result
+    - State
+    - Action
+    - Vertex
+    - Edge
+    - Input
+    - Output
+    - Element
+    - Adaptee
+
+  # Synonyms collapsed to their canonical role (criterion 6).
+  synonyms:
+    Yielded: Output
+    Sent: Input
+    Return: Result
+    Returned: Result
+    Elem: Element
+
+  # Branded names tolerated for now, reported as WARNING (not ERROR), pending an
+  # ADR decision to rename to a canonical role or keep (mirrors ORG-01 grandfathering).
+  grandfathered:
+    - WattleType
