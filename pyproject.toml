@@ -14,7 +14,7 @@ license = "Apache-2.0"
 license-files = ["LICENSE"]
 authors = [{ name = "wattleflow", email = "wattleflow@outlook.com" }]
 keywords = ["wattleflow", "framework", "core", "library", "design", "patterns", "python", "software engineering"]
-requires-python = ">=3.9"
+requires-python = ">=3.10"
 # Intentionally empty: the framework depends on the standard library only.
 dependencies = []
 classifiers = [
@@ -59,10 +59,8 @@ namespaces = true
 
 [tool.ruff]
 line-length = 120
-target-version = "py39"
+target-version = "py310"
 
 [tool.ruff.lint]
-# "I" (isort) is deliberately not selected: src/ currently has 5 I001 findings.
-# Enable it together with `ruff check --select I --fix src/`.
-select = ["E", "W", "F", "B"]
+select = ["E", "W", "F", "I", "B"]
 ignore = ["E203", "E731"]

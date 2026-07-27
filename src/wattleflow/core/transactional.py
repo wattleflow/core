@@ -7,11 +7,14 @@
 # region Imports                                                              #
 # --------------------------------------------------------------------------- #
 from __future__ import annotations
+
 from abc import ABC, abstractmethod
 from datetime import datetime
 from typing import Any, Dict, Generic, Optional, TypeVar
+
 from .framework import IWattleflow
 from .structural import IAdaptee, ITarget
+
 # --------------------------------------------------------------------------- #
 # endregion Imports                                                           #
 # --------------------------------------------------------------------------- #

@@ -7,8 +7,10 @@
 # region Imports                                                              #
 # --------------------------------------------------------------------------- #
 from __future__ import annotations
+
 from abc import ABC, abstractmethod
-from typing import Any, Callable, Iterable, Optional, Generic, TypeVar, Tuple
+from typing import Any, Callable, Generic, Iterable, Optional, Tuple, TypeVar
+
 from .framework import IWattleflow
 
 # --------------------------------------------------------------------------- #

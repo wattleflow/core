@@ -1,6 +1,5 @@
 build
-setuptools
-setuptools_scm
+setuptools>=77
 wheel
 # ruff
-# twine
+# twine>=6.1   # older twine rejects the Metadata-Version 2.4 this project emits

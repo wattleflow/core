@@ -2,10 +2,6 @@ global-exclude *
 
 recursive-include src/wattleflow/core *.py
 
-exclude *.log
-exclude *.tmp
-exclude *.yaml
-
 prune .github
 prune data/
 prune docs/
@@ -13,5 +9,4 @@ prune test/
 prune tests/
 prune tools/category
 
-include tools/audit.py
 include README.md LICENSE pyproject.toml requirements-dev.txt

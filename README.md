@@ -1,5 +1,5 @@
 # WattleFlow Core
-![WattleFlow Logo](src/wattleflow/logo/wattleflow.png)
+![WattleFlow Logo](https://raw.githubusercontent.com/wattleflow/core/default/src/wattleflow/logo/wattleflow.png)
 
 [![PyPI version](https://img.shields.io/pypi/v/wattleflow.svg)](https://pypi.org/project/wattleflow/)
 [![Python versions](https://img.shields.io/pypi/pyversions/wattleflow.svg)](https://pypi.org/project/wattleflow/)
