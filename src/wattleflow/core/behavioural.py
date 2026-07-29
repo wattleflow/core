@@ -9,7 +9,8 @@
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
-from typing import Any, AsyncIterator, Generic, Iterator, TypeVar
+from collections.abc import AsyncIterator, Iterator
+from typing import Any, Generic, TypeVar
 
 from .framework import IWattleflow
 
@@ -53,7 +54,7 @@ class IHandler(IWattleflow, ABC):
     """
 
     @abstractmethod
-    def set_next(self, handler: "IHandler") -> None: ...
+    def set_next(self, handler: IHandler) -> None: ...
 
     @abstractmethod
     def handle(self, request: Any) -> None: ...
@@ -179,7 +180,7 @@ class IMediator(IWattleflow, ABC):
     """
 
     @abstractmethod
-    def notify(self, sender: "IColleague", event: Any, **data: Any) -> None: ...
+    def notify(self, sender: IColleague, event: Any, **data: Any) -> None: ...
 
 
 class IColleague(IWattleflow, ABC):
@@ -288,7 +289,7 @@ class IState(IWattleflow, ABC):
     """
 
     @abstractmethod
-    def handle(self, context: "IStateContext", **kwargs: Any) -> None: ...
+    def handle(self, context: IStateContext, **kwargs: Any) -> None: ...
 
 
 class IStateContext(IWattleflow, ABC):
@@ -363,6 +364,7 @@ class ITemplate(IWattleflow, ABC):
 
     """
 
+    """
     def process(self) -> None:
         self.initialise()
         try:
@@ -372,7 +374,9 @@ class ITemplate(IWattleflow, ABC):
             self.after_task()
         finally:
             self.finalise()
+    """
 
+    def process(self) -> None: ...
     def before_task(self) -> None: ...  # hook (optional)
     def after_task(self) -> None: ...  # hook (optional)
 
@@ -396,7 +400,7 @@ class IVisitor(IWattleflow, ABC):
     """
 
     @abstractmethod
-    def visit(self, element: "IElement") -> Any: ...
+    def visit(self, element: IElement) -> Any: ...
 
 
 class IElement(IWattleflow, ABC):

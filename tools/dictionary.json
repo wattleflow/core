@@ -1,0 +1,98 @@
+{
+  "_about": [
+    "Criterion dictionary for tools/wem_lint.py — the controlled vocabulary and",
+    "allowlists the conformance lint measures the core interface layer against.",
+    "JSON, not YAML: the lint is stdlib-only by design (no PyYAML dependency) and",
+    "json is the only structured format the standard library parses. Keys starting",
+    "with an underscore are comments and are ignored by the loader.",
+    "Entity, Event, Item and Extrinsic, all of which the core now declares.",
+    "Extend roles ONLY via DR."
+  ],
+  "dictionary_version": "0.3.0",
+  "python_reference": "3.10",
+  "_allowed_imports": "DR-COR-003/005 — the interface layer imports contracts only.",
+  "allowed_imports": [
+    "__future__",
+    "abc",
+    "typing",
+    "typing_extensions",
+    "datetime",
+    "collections.abc"
+  ],
+  "allowed_third_party": [
+    "typing_extensions"
+  ],
+  "_typevar_roles": [
+    "NFR-ORG-03 criterion 1 — a TypeVar names the role the type plays in the",
+    "contract, not the mechanism. Every name declared in src/wattleflow/core is",
+    "covered by this list; anything outside it is R-CORE-TYP-02 (WARNING)."
+  ],
+  "typevar_roles": [
+    "Action",
+    "Adaptee",
+    "Connection",
+    "Content",
+    "Context",
+    "Destination",
+    "Edge",
+    "Element",
+    "Entity",
+    "Event",
+    "Extrinsic",
+    "Input",
+    "Item",
+    "Key",
+    "Message",
+    "Output",
+    "Result",
+    "State",
+    "Value",
+    "Vertex"
+  ],
+  "typevar_forbidden": [
+    "T",
+    "W",
+    "WattleType"
+  ],
+  "_typevar_synonyms": [
+    "NFR-ORG-03 criterion 6 — synonym collapsed to its canonical role.",
+    "Carried over from the YAML block but NOT yet consumed by any rule:",
+    "TypeVarRule tests membership in typevar_roles only. The lint reports this",
+    "key as R-CORE-CFG-01 on every run so the gap stays declared, never silent."
+  ],
+  "typevar_synonyms": {
+    "Yielded": "Output",
+    "Sent": "Input",
+    "Return": "Result",
+    "Returned": "Result",
+    "Elem": "Element"
+  },
+  "_typevar_tolerated": [
+    "Known departures from the role vocabulary that the criterion tolerates:",
+    "reported as WARNING rather than ERROR until a DR renames them or admits",
+    "them to typevar_roles. Named after the effect on severity; the key was",
+    "renamed from the YAML block's original name on 2026-07-28.",
+    "UNRESOLVED CONFLICT: WattleType is listed here AND in typevar_forbidden,",
+    "where the in-force rule makes it an ERROR. The forbidden list wins today",
+    "because no DR has downgraded it; the conflict is surfaced as",
+    "R-CORE-CFG-01 rather than silently decided by the tool."
+  ],
+  "typevar_tolerated": [
+    "WattleType"
+  ],
+  "allowed_dunders": [
+    "__author__",
+    "__copyright__",
+    "__license__",
+    "__version__",
+    "__all__"
+  ],
+  "_exclude_modules": [
+    "Infrastructure files inside the package directory that are not interface",
+    "modules. Every entry is a DECLARED blind spot: the lint emits R-CORE-EXC-01",
+    "INFO for each exclusion so the vector never hides one."
+  ],
+  "exclude_modules": [
+    "_version.py"
+  ]
+}

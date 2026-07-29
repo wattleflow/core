@@ -47,7 +47,7 @@ class IAdaptee(IWattleflow, ABC):
     ISignal narrow to their content type; an identity adaptee may narrow to
     its own type and return self). The former concrete identity default
     (`return self`) was an implementation policy and now lives with concrete
-    identity adaptees (ADR-009).
+    identity adaptees (DR-COR-009).
 
     Interface:
         specific_request() -> Any

@@ -35,7 +35,7 @@ class IFactory(IWattleflow, ABC):
     Creates objects without exposing their concrete classes. create() is a
     static factory: it receives all inputs as keyword arguments and holds no
     instance state (a deliberate constraint — a stateful/configurable factory
-    would need an instance method instead; see ADR-004).
+    would need an instance method instead; see DR-COR-004).
 
     Interface:
         create(**kwargs) -> Any  (staticmethod)
@@ -109,7 +109,7 @@ class IPrototype(IWattleflow, ABC):
     Note:
         clone() is annotated "IPrototype" rather than typing.Self because the
         supported minimum is Python 3.10 (Self lands in 3.11). Reintroduce
-        Self by ADR when the minimum rises — stronger subclass typing at
+        Self by DR when the minimum rises — stronger subclass typing at
         zero runtime cost.
 
     Interface:

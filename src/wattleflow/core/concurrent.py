@@ -251,12 +251,12 @@ class IMessageQueue(IWattleflow, Generic[Message, Destination], ABC):
     that require explicit commit/ack (e.g. Kafka, AMQP manual-ack mode).
     Declared as an accepted contract default (Null-ack semantics): "ack is
     optional" is part of the contract, not an implementation policy
-    (ADR-012).
+    (DR-COR-012).
 
     Interface:
         send(message: Message, destination: Destination) -> None
         receive(source: Destination, timeout: Optional[float] = None) -> Optional[Message]
-        acknowledge() -> None  # concrete no-op default (ADR-012)
+        acknowledge() -> None  # concrete no-op default (DR-COR-012)
     """
 
     @abstractmethod
@@ -265,8 +265,9 @@ class IMessageQueue(IWattleflow, Generic[Message, Destination], ABC):
     @abstractmethod
     def receive(self, source: Destination, timeout: Optional[float] = None) -> Optional[Message]: ...
 
-    def acknowledge(self) -> None:
-        """Commit/ack the last received message. No-op for systems without explicit ack."""
+    """Commit/ack the last received message. No-op for systems without explicit ack."""
+
+    def acknowledge(self) -> None: ...
 
 
 # ThreadPool-Pool Interface

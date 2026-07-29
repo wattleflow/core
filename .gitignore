@@ -11,5 +11,11 @@ __pycache__/
 documentation/
 tools/category
 tools/audit.py
-# tools/naming_registry.yaml
 # tools/wem_lint.py
+
+# wattleflow-core carries configuration in JSON only: the tools are
+# stdlib-only and json is the sole structured format the standard library
+# parses. The one exception is .github/workflows/*.yml, whose format GitHub
+# imposes; it is already tracked, and .gitignore does not untrack files.
+*.yaml
+*.yml
