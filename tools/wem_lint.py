@@ -1062,7 +1062,9 @@ def main(argv: Optional[List[str]] = None) -> int:
     parser = argparse.ArgumentParser(
         description="Conformance lint for the wattleflow-core interface layer (vector output, no aggregate score)."
     )
-    parser.add_argument("package", nargs="?", default="src/wattleflow/core", help="path to the core package directory")
+    parser.add_argument(
+        "package", nargs="?", default=f"{_REPO_ROOT}/src/wattleflow/core", help="path to the core package directory"
+    )
     parser.add_argument(
         "--dictionary",
         type=Path,

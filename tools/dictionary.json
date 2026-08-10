@@ -50,6 +50,8 @@
     "Vertex"
   ],
   "typevar_forbidden": [
+    "A",
+    "C",
     "T",
     "W",
     "WattleType"
