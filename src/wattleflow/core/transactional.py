@@ -85,6 +85,42 @@ class IDriver(IWattleflow, ABC):
     def metadata(cls) -> Any: ...
 
 
+# IParser / IFormatter - format side of the I/O boundary opened by IDriver
+class IParser(IWattleflow, Generic[Content], ABC):
+    """
+    IParser - Deserialisation abstract interface.
+
+    A Strategy specialisation at the I/O boundary: turns a serialised source
+    into a domain object. The contract fixes no transport — what a source is
+    (open stream, path, in-memory payload) and how it is obtained is the
+    implementation's policy, not the interface's. Not an Interpreter: the
+    catalogue excludes parsing from that pattern, and no grammar or composite
+    expression tree is implied here.
+
+    Interface:
+        parse(**kwargs) -> Content
+    """
+
+    @abstractmethod
+    def parse(self, **kwargs) -> Content: ...
+
+
+class IFormatter(IWattleflow, Generic[Content], ABC):
+    """
+    IFormatter - Serialisation abstract interface.
+
+    The write-side mirror of IParser: renders a domain object into a payload.
+    The caller owns the sink, so render() returns the payload and writes
+    nothing. As with IParser, the contract fixes no transport.
+
+    Interface:
+        render(**kwargs) -> bytes | str
+    """
+
+    @abstractmethod
+    def render(self, **kwargs) -> bytes | str: ...
+
+
 # Signal
 class ISignal(IAdaptee, Generic[Content], ABC):
     ...
