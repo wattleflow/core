@@ -85,6 +85,31 @@ class IDriver(IWattleflow, ABC):
     def metadata(cls) -> Any: ...
 
 
+# IConfig - declarative side of the same boundary: settings, not payload
+class IConfig(IWattleflow, ABC):
+    """
+    IConfig - Read-only hierarchical configuration source.
+
+    The contract every configuration carries: resolve a path of keys to a
+    value, or yield the caller's default when the path is absent. It fixes no
+    serialisation format, no file, and no resolution policy — a document on
+    disk, an in-memory mapping and a secret-resolving adapter all satisfy it,
+    which is what lets a consumer state its need without naming a format.
+
+    Absence is answered with `default`, never by raising: configuration
+    lookups sit on the construction path, where an exception per missing
+    optional key would make every consumer defensive.
+
+    Interface:
+        find(*keys, default=None) -> Any
+    """
+
+    __slots__ = ()
+
+    @abstractmethod
+    def find(self, *keys: str, default: Any = None) -> Any: ...
+
+
 # IParser / IFormatter - format side of the I/O boundary opened by IDriver
 class IParser(IWattleflow, Generic[Content], ABC):
     """

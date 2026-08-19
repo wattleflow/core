@@ -90,6 +90,7 @@ from .structural import (
 )
 from .transactional import (
     IBlackboard,
+    IConfig,
     IDocument,
     IDriver,
     IEvent,
@@ -118,6 +119,7 @@ __all__ = [
     "IBSPSystem",
     "IBarrier",
     "IBlackboard",
+    "IConfig",
     "IBuilder",
     "ICallback",
     "IColleague",
