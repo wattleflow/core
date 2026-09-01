@@ -19,7 +19,7 @@ Changelog
     (documentation/ is ignored in this repository).
 0.5.0 (2026-07-28)
     The criterion moved out of the tool and into the repository:
-    documentation/dictionary.json, converted from the NFR-ORG-03 block of
+    documentation/dictionary.json, converted from the NFRQ-ORG-03 block of
     the retired tools/naming_registry.yaml. JSON, not YAML — the tool is
     stdlib-only and json is the only structured format the standard
     library parses; the .yaml path the option carried was never readable.

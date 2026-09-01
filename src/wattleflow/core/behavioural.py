@@ -29,7 +29,7 @@ Action = TypeVar("Action")  # action type
 Context = TypeVar("Context")  # context type
 Result = TypeVar("Result")  # result type
 State = TypeVar("State")  # state type
-Element = TypeVar("Element")  # traversed element type  [NFR-ORG-03]
+Element = TypeVar("Element")  # traversed element type  [NFRQ-ORG-03]
 # --------------------------------------------------------------------------- #
 # endregion Types                                                             #
 # --------------------------------------------------------------------------- #

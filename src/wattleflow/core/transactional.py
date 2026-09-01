@@ -27,11 +27,11 @@ __license__ = "Apache 2 Licence"
 # --------------------------------------------------------------------------- #
 # region Types                                                                #
 # --------------------------------------------------------------------------- #
-Content = TypeVar("Content")  # document/signal payload type      [NFR-ORG-03]
-Entity = TypeVar("Entity")  # unit-of-work tracked entity type  [NFR-ORG-03]
-Event = TypeVar("Event")  # emitted/handled event type        [NFR-ORG-03]
-Item = TypeVar("Item")  # processor work item type          [NFR-ORG-03]
-Result = TypeVar("Result")  # query result type                 [NFR-ORG-03]
+Content = TypeVar("Content")  # document/signal payload type      [NFRQ-ORG-03]
+Entity = TypeVar("Entity")  # unit-of-work tracked entity type    [NFRQ-ORG-03]
+Event = TypeVar("Event")  # emitted/handled event type            [NFRQ-ORG-03]
+Item = TypeVar("Item")  # processor work item type                [NFRQ-ORG-03]
+Result = TypeVar("Result")  # query result type                   [NFRQ-ORG-03]
 # --------------------------------------------------------------------------- #
 # endregion Types                                                             #
 # --------------------------------------------------------------------------- #

@@ -23,7 +23,7 @@ built to last and grow.
 | **Python Compatibility** | [![Python versions](https://img.shields.io/pypi/pyversions/wattleflow.svg)](https://pypi.org/project/wattleflow/)|
 | **Dependencies**         | nil |
 | **Size**                 | nimble                                                                  |
-| **Documentation**        | [WattleFlow Core Documentation](https://github.com/wattleflow/docs.git) |
+| **Documentation**        | [WattleFlow Core Documentation](https://github.com/wattleflow/documentation.git) |
 
 # WattleFlow Core Framework
 A modular framework for Python, that facilitates design patterns as an architectural building blocks to enable efficient architecture.

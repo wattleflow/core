@@ -31,9 +31,9 @@ Message = TypeVar("Message")
 Destination = TypeVar("Destination")
 Vertex = TypeVar("Vertex")  # graph vertex type
 Edge = TypeVar("Edge")  # graph edge type
-Output = TypeVar("Output")  # coroutine yield (output) type  [NFR-ORG-03]
-Input = TypeVar("Input")  # coroutine send (input) type     [NFR-ORG-03]
-Result = TypeVar("Result")  # deferred/computed value type   [NFR-ORG-03]
+Output = TypeVar("Output")  # coroutine yield (output) type  [NFRQ-ORG-03]
+Input = TypeVar("Input")  # coroutine send (input) type     [NFRQ-ORG-03]
+Result = TypeVar("Result")  # deferred/computed value type   [NFRQ-ORG-03]
 # --------------------------------------------------------------------------- #
 # endregion Types                                                             #
 # --------------------------------------------------------------------------- #
@@ -295,7 +295,7 @@ class ICoroutine(IWattleflow, Generic[Output, Input], ABC):
     """
     ICoroutine - Coroutine abstract interface (generator-like).
 
-    Type parameters  [NFR-ORG-03]
+    Type parameters  [NFRQ-ORG-03]
     ---------------
     Output — type produced (yielded) by the coroutine on each step
     Input  — type accepted by send()

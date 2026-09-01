@@ -21,8 +21,8 @@ from .framework import IWattleflow
 # --------------------------------------------------------------------------- #
 # region Types                                                                #
 # --------------------------------------------------------------------------- #
-Element = TypeVar("Element")  # part-whole element type      [NFR-ORG-03]
-Extrinsic = TypeVar("Extrinsic")  # flyweight extrinsic state    [NFR-ORG-03]
+Element = TypeVar("Element")  # part-whole element type      [NFRQ-ORG-03]
+Extrinsic = TypeVar("Extrinsic")  # flyweight extrinsic state    [NFRQ-ORG-03]
 # --------------------------------------------------------------------------- #
 # endregion Types                                                             #
 # --------------------------------------------------------------------------- #

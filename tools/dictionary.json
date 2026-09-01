@@ -23,7 +23,7 @@
     "typing_extensions"
   ],
   "_typevar_roles": [
-    "NFR-ORG-03 criterion 1 — a TypeVar names the role the type plays in the",
+    "NFRQ-ORG-03 criterion 1 — a TypeVar names the role the type plays in the",
     "contract, not the mechanism. Every name declared in src/wattleflow/core is",
     "covered by this list; anything outside it is R-CORE-TYP-02 (WARNING)."
   ],
@@ -57,7 +57,7 @@
     "WattleType"
   ],
   "_typevar_synonyms": [
-    "NFR-ORG-03 criterion 6 — synonym collapsed to its canonical role.",
+    "NFRQ-ORG-03 criterion 6 — synonym collapsed to its canonical role.",
     "Carried over from the YAML block but NOT yet consumed by any rule:",
     "TypeVarRule tests membership in typevar_roles only. The lint reports this",
     "key as R-CORE-CFG-01 on every run so the gap stays declared, never silent."
