@@ -19,3 +19,8 @@ tools/audit.py
 # imposes; it is already tracked, and .gitignore does not untrack files.
 *.yaml
 *.yml
+# Secrets never enter git (P-23, NFRQ-SEC-09): ignore by pattern, at any depth.
+.env
+.env.*
+!.env.example
+.envrc

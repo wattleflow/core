@@ -133,11 +133,7 @@ class Interface:
 
 
 class SourceReader:
-    """Reads interfaces out of the core package by AST, never by import.
-
-    Importing would execute the package and pull its runtime; the tool must run
-    against a checkout that is not installed.
-    """
+    """Reads interfaces out of the core package by AST, never by import."""
 
     @classmethod
     def read(cls, package: Path) -> list[Interface]:
@@ -370,7 +366,9 @@ class DiagramCatalogue:
     # -- structure ---------------------------------------------------------- #
 
     @classmethod
-    def _ancestors(cls, item: Interface, index: dict[str, Interface]) -> list[Interface]:
+    def _ancestors(
+        cls, item: Interface, index: dict[str, Interface]
+    ) -> list[Interface]:
         """Core interfaces reached by following bases upwards, nearest first."""
         seen: list[Interface] = []
         queue = [b for b in cls._core_bases(item, index)]
@@ -397,7 +395,9 @@ class DiagramCatalogue:
         return [h for h in heads if h in index]
 
     @classmethod
-    def _externals(cls, family: list[Interface], index: dict[str, Interface]) -> list[str]:
+    def _externals(
+        cls, family: list[Interface], index: dict[str, Interface]
+    ) -> list[str]:
         """Bases that are not core interfaces (ABC, typing generics), deduplicated."""
         found: list[str] = []
         for member in family:
@@ -488,10 +488,16 @@ class DiagramCatalogue:
                     continue
                 if external:
                     seen_external.add(base)
-                out.append(f"{cls._ref(base, index)} <|-- {cls._alias(member.name)}{cls._binding_label(base, index)}")
+                out.append(
+                    f"{cls._ref(base, index)} <|-- {cls._alias(member.name)}{cls._binding_label(base, index)}"
+                )
         for child in children:
-            base = next(b for b in child.bases if b.split("[", 1)[0].strip() == item.name)
-            out.append(f"{cls._alias(item.name)} <|-- {cls._alias(child.name)}{cls._binding_label(base, index)}")
+            base = next(
+                b for b in child.bases if b.split("[", 1)[0].strip() == item.name
+            )
+            out.append(
+                f"{cls._alias(item.name)} <|-- {cls._alias(child.name)}{cls._binding_label(base, index)}"
+            )
         return out
 
     @classmethod
@@ -564,7 +570,11 @@ class DiagramCatalogue:
     def _alias(name: str) -> str:
         """A PlantUML identifier: brackets and dots are not allowed in one."""
         head = name.split("[", 1)[0].strip()
-        return "".join(c if c.isalnum() or c == "_" else "_" for c in name) if head != name else name
+        return (
+            "".join(c if c.isalnum() or c == "_" else "_" for c in name)
+            if head != name
+            else name
+        )
 
     @staticmethod
     def _display(base: str) -> str:
@@ -612,7 +622,9 @@ class MarkdownOverview:
             out.append("|---|---|---|")
             for item in sorted(by_module[module], key=lambda i: i.name):
                 role = item.role or "**(role not declared)**"
-                out.append(f"| [`{item.name}`](#{item.name.lower()}) | {role} | `{item.inherits}` |")
+                out.append(
+                    f"| [`{item.name}`](#{item.name.lower()}) | {role} | `{item.inherits}` |"
+                )
             out.append("")
 
         out.append("---")
@@ -631,7 +643,9 @@ class MarkdownOverview:
         return known + sorted(set(by_module) - set(known))
 
     @staticmethod
-    def _entry(item: Interface, package: Path, diagrams: str | None = None) -> list[str]:
+    def _entry(
+        item: Interface, package: Path, diagrams: str | None = None
+    ) -> list[str]:
         out = [f"### {item.name}", ""]
         out.append(f"`{item.qualified}` · `{item.module}.py:{item.lineno}`")
         out.append("")
@@ -665,7 +679,9 @@ class MarkdownOverview:
             out.append("")
         if diagrams:
             stem = f"{diagrams}/{item.name}"
-            out.append(f"![{item.name} class diagram]({stem}{MarkdownOverview.IMAGE_SUFFIX})")
+            out.append(
+                f"![{item.name} class diagram]({stem}{MarkdownOverview.IMAGE_SUFFIX})"
+            )
             out.append("")
             out.append(
                 f"<sub>Class diagram — [source]({stem}{DiagramCatalogue.SUFFIX}). "
@@ -705,7 +721,9 @@ class Application:
         wrote = False
         for target in args.snippets:
             target.parent.mkdir(parents=True, exist_ok=True)
-            target.write_text(SnippetCatalogue.render(interfaces, VERSION), encoding="utf-8")
+            target.write_text(
+                SnippetCatalogue.render(interfaces, VERSION), encoding="utf-8"
+            )
             print(f"snippets  {len(interfaces)} interfaces -> {target}")
             wrote = True
 
@@ -731,7 +749,9 @@ class Application:
         return 1 if failed else 0
 
     @staticmethod
-    def _diagrams(interfaces: list[Interface], directory: Path) -> tuple[int, list[str]]:
+    def _diagrams(
+        interfaces: list[Interface], directory: Path
+    ) -> tuple[int, list[str]]:
         """Write one .puml per interface and drop the ones no interface claims.
 
         The tool owns `*.puml` in this directory: a diagram left behind by a
@@ -742,7 +762,9 @@ class Application:
         index = {i.name: i for i in interfaces}
         for item in interfaces:
             target = directory / f"{item.name}{DiagramCatalogue.SUFFIX}"
-            target.write_text(DiagramCatalogue.render(item, index, VERSION), encoding="utf-8")
+            target.write_text(
+                DiagramCatalogue.render(item, index, VERSION), encoding="utf-8"
+            )
 
         stale = []
         for path in sorted(directory.glob(f"*{DiagramCatalogue.SUFFIX}")):
@@ -756,7 +778,9 @@ class Application:
         """Where the Markdown reaches the diagrams from, relative to itself."""
         if not (args.uml and args.markdown):
             return None
-        return os.path.relpath(args.uml.resolve(), args.markdown.resolve().parent).replace(os.sep, "/")
+        return os.path.relpath(
+            args.uml.resolve(), args.markdown.resolve().parent
+        ).replace(os.sep, "/")
 
     @staticmethod
     def _parse(argv: list[str] | None) -> argparse.Namespace:
@@ -764,7 +788,9 @@ class Application:
             prog="core_index",
             description="Generate a browsable index of the wattleflow.core interfaces.",
         )
-        parser.add_argument("--version", action="version", version=f"core_index {VERSION}")
+        parser.add_argument(
+            "--version", action="version", version=f"core_index {VERSION}"
+        )
         parser.add_argument(
             "--package",
             type=Path,
@@ -813,7 +839,9 @@ class Application:
         for item in sorted(offenders, key=lambda i: (i.module, i.name)):
             location = f"{item.module}.py:{item.lineno}"
             print(f"{location:<24} {item.name:<24} {'; '.join(item.findings)}")
-        print(f"\nconvention: {len(interfaces) - len(offenders)}/{len(interfaces)} conform, {len(offenders)} depart")
+        print(
+            f"\nconvention: {len(interfaces) - len(offenders)}/{len(interfaces)} conform, {len(offenders)} depart"
+        )
         return len(offenders)
 
 

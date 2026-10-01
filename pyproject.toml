@@ -29,14 +29,12 @@ classifiers = [
     "Topic :: Software Development :: Libraries :: Python Modules",
 ]
 
-[project.optional-dependencies]
-dev = [
-    "build",
-    "setuptools>=77",
-    "wheel"
-]
+#[project.optional-dependencies]
+#dev = [
+#    "wheel"
 #    "ruff",
 #    "twine>=6.1",   # older twine rejects Metadata-Version 2.4
+#]
 
 [project.urls]
 Homepage = "https://github.com/wattleflow/core"
