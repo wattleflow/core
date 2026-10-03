@@ -215,7 +215,7 @@ class IEventSource(IWattleflow, Generic[Event], ABC):
     IEventSource - Event-Driven (source role) abstract interface.
 
     Registers listeners and emits events to them. Generic over the emitted
-    Event type; **kwargs carries emission metadata (DR-COR-010) so subclasses
+    Event type; **kwargs carries emission metadata so subclasses
     need no widening override.
 
     Interface:
@@ -353,7 +353,7 @@ class IProcessor(IWattleflow, Generic[Item], ABC):
         create_generator() -> Item
         start() -> None
 
-    Note (DR-COR-011, open): the parameter denotes the produced value; the
+    Note (open): the parameter denotes the produced value; the
     return type of create_generator() is likely Iterator[Item] rather than
     Item. Decision deferred until GenericProcessor (workflow) is reviewed —
     the contract shape is preserved unchanged here.

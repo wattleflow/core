@@ -250,13 +250,12 @@ class IMessageQueue(IWattleflow, Generic[Message, Destination], ABC):
     acknowledge() has a concrete no-op default — override only in systems
     that require explicit commit/ack (e.g. Kafka, AMQP manual-ack mode).
     Declared as an accepted contract default (Null-ack semantics): "ack is
-    optional" is part of the contract, not an implementation policy
-    (DR-COR-012).
+    optional" is part of the contract, not an implementation policy.
 
     Interface:
         send(message: Message, destination: Destination) -> None
         receive(source: Destination, timeout: Optional[float] = None) -> Optional[Message]
-        acknowledge() -> None  # concrete no-op default (DR-COR-012)
+        acknowledge() -> None  # concrete no-op default
     """
 
     @abstractmethod

@@ -17,6 +17,7 @@ tools/audit.py
 # stdlib-only and json is the sole structured format the standard library
 # parses. The one exception is .github/workflows/*.yml, whose format GitHub
 # imposes; it is already tracked, and .gitignore does not untrack files.
+
 *.yaml
 *.yml
 # Secrets never enter git (P-23, NFRQ-SEC-09): ignore by pattern, at any depth.
@@ -24,3 +25,4 @@ tools/audit.py
 .env.*
 !.env.example
 .envrc
+Make*

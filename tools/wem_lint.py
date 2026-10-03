@@ -52,7 +52,7 @@ Changelog
 0.4.0 (2026-07-24)
     Instrument-validity fix, found because ABS stayed silent on a run that
     should have flagged ISingleton: once the root IWattleflow gained an
-    abstract name property (DR-COR-001), every subclass not implementing it
+    abstract name property, every subclass not implementing it
     became nominally abstract, so inspect.isabstract lost discriminative
     power for ORG-02d — the proxy diverged from the construct, with no
     change to the tool. New rule R-CORE-ABS-03: an I-prefixed class whose
@@ -81,7 +81,7 @@ Changelog
     thereby consumer #2 of the core catalogue.
 0.1.0 (2026-07-24)
     Initial procedural version: rules R-CORE-IMP/SFX/ABS/STA/TYP/FAC/HDR
-    derived from the DR series; stdlib-only, single file, JSON dictionary
+    derived from the documented requirements; stdlib-only, single file, JSON dictionary
     override, vector output with no aggregate score.
 
 Pattern mapping (dogfooding):
@@ -102,17 +102,17 @@ workflow distribution): it consumes framework, behavioural and creational
 contracts. This changes the offered/consumed measurement and is
 deliberate.
 
-Rules (mapped to the DR series):
+Rules:
   R-CORE-IMP-01  interface modules import only the allowlist:
                  __future__, abc, typing, typing_extensions, datetime,
-                 collections.abc + package-relative.          [DR-COR-003/005]
+                 collections.abc + package-relative.
   R-CORE-IMP-02  absolute imports resolve within pinned stdlib or the
-                 allowed third-party set.                     [DR-ORG-01]
-  R-CORE-SFX-01  no module-level side effects.                [DR-COR-005]
-  R-CORE-ABS-01  I<Upper>-named class must be abstract.       [DR-ORG-02d]
+                 allowed third-party set.
+  R-CORE-SFX-01  no module-level side effects.
+  R-CORE-ABS-01  I<Upper>-named class must be abstract.
   R-CORE-ABS-02  abstract class should carry the I prefix (warning).
-  R-CORE-STA-01  no __init__ in interface classes.            [DR-COR-001]
-  R-CORE-STA-02  __slots__, if declared, is empty.            [DR-COR-002]
+  R-CORE-STA-01  no __init__ in interface classes.
+  R-CORE-STA-02  __slots__, if declared, is empty.
   R-CORE-STA-03  concrete methods in I-classes reported as INFO — the
                  defining-algorithm exception is not machine-decidable.
   R-CORE-TYP-01  no mechanism TypeVar names (T, W, WattleType, 1–2 chars).
@@ -385,10 +385,11 @@ class ReportBuilder(WemComponent, IBuilder):
     severity) count vector. No aggregate score is built — deliberately.
     """
 
-    def __init__(self, log: FindingLog, modules: int = 0, dictionary_version: str = "?") -> None:
+    def __init__(self, log: FindingLog, modules: int = 0, dictionary_version: str = "?", documentation_version: str = "?") -> None:
         self._log = log
         self._modules = modules
         self._dictionary_version = dictionary_version
+        self._documentation_version = documentation_version
 
     @staticmethod
     def _dimension(rule: str) -> str:
@@ -424,7 +425,7 @@ class ReportBuilder(WemComponent, IBuilder):
         for _, sev, _, _, _ in self._log.findings:
             by_sev[sev] = by_sev.get(sev, 0) + 1
         errors, warnings, infos = by_sev["ERROR"], by_sev["WARNING"], by_sev["INFO"]
-        scope = f"{self._modules} module(s) checked, dictionary {self._dictionary_version}"
+        scope = f"{self._modules} module(s) checked, dictionary {self._dictionary_version}, documentation {self._documentation_version}"
         if errors:
             verdict = f"FAIL — {errors} error(s), {warnings} warning(s), {infos} info ({scope})"
         elif warnings or infos:
@@ -684,7 +685,7 @@ class TypeVarRule(LintRule):
                         "WARNING",
                         scan.relname,
                         line,
-                        f"TypeVar {name!r} not in the role vocabulary — extend the dictionary via DR or rename",
+                        f"TypeVar {name!r} not in the role vocabulary — extend the dictionary via a documented change or rename",
                     )
             for node in scan.tree.body:
                 tv = _is_typevar_assign(node)
@@ -719,7 +720,7 @@ class ClassStateRule(LintRule):
                                 item.lineno,
                                 f"{node.name}.__init__: interface "
                                 f"classes hold no state and impose no "
-                                f"constructor discipline (DR-COR-001)",
+                                f"constructor discipline",
                             )
                         elif "abstractmethod" not in decs:
                             concrete.append(item.name)
@@ -734,7 +735,7 @@ class ClassStateRule(LintRule):
                                         "ERROR",
                                         scan.relname,
                                         item.lineno,
-                                        f"{node.name}.__slots__ non-empty: interfaces contribute no storage (DR-COR-002)",
+                                        f"{node.name}.__slots__ non-empty: interfaces contribute no storage",
                                     )
                 if concrete and _is_interface_name(node.name):
                     log.add(
@@ -744,7 +745,7 @@ class ClassStateRule(LintRule):
                         node.lineno,
                         f"{node.name} has concrete method(s) "
                         f"{', '.join(sorted(concrete))} — verify the "
-                        f"defining-algorithm exception (DR-COR-001); not "
+                        f"defining-algorithm exception; not "
                         f"machine-decidable",
                     )
 
@@ -1044,7 +1045,7 @@ class CoreLintRun(WemComponent, ITemplate):
         # --quiet suppresses the report on a run without errors; errors are
         # always reported, so silence never hides a violation.
         if not (self._quiet and not self._log.has_errors):
-            print(ReportBuilder(self._log, len(self._scans), str(self._cfg.get("dictionary_version", "?"))).build())
+            print(ReportBuilder(self._log, len(self._scans), str(self._cfg.get("dictionary_version", "?")), str(self._cfg.get("documentation_version", "?"))).build())
         if self._log.has_errors:
             self.exit_code = 1
 

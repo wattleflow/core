@@ -38,8 +38,8 @@ implementation and no third-party dependency, so its import closure is the stand
 | `transactional` | units of work |
 | `framework` | the domain primitives: workflow, pipeline, processor, driver, repository, blackboard, strategy, connection, document |
 
-The interfaces are authoritative: they change only through a recorded decision (`DR-COR`
-series in the documentation repository).
+The interfaces are authoritative: they change only through a documented change
+(HLRQ/FRQ/NFRQ record in the documentation repository).
 
 # Installation
 

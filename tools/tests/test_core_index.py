@@ -8,7 +8,7 @@
 Run: python -m unittest discover -s tools/tests -v
 
 Every assertion here is a claim about the tool, so each carries a mutation that
-must break it (DR-WFL-023). The fixture is written inline rather than read from
+must break it. The fixture is written inline rather than read from
 the real package: the tool's behaviour must be provable without the source it
 normally reads.
 """

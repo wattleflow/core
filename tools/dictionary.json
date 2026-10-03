@@ -6,11 +6,12 @@
     "json is the only structured format the standard library parses. Keys starting",
     "with an underscore are comments and are ignored by the loader.",
     "Entity, Event, Item and Extrinsic, all of which the core now declares.",
-    "Extend roles ONLY via DR."
+    "Extend roles ONLY via a documented change."
   ],
   "dictionary_version": "0.3.0",
+  "documentation_version": "v0.0.5",
   "python_reference": "3.10",
-  "_allowed_imports": "DR-COR-003/005 — the interface layer imports contracts only.",
+  "_allowed_imports": "The interface layer imports contracts only.",
   "allowed_imports": [
     "__future__",
     "abc",
@@ -71,12 +72,12 @@
   },
   "_typevar_tolerated": [
     "Known departures from the role vocabulary that the criterion tolerates:",
-    "reported as WARNING rather than ERROR until a DR renames them or admits",
+    "reported as WARNING rather than ERROR until a documented change renames them or admits",
     "them to typevar_roles. Named after the effect on severity; the key was",
     "renamed from the YAML block's original name on 2026-07-28.",
     "UNRESOLVED CONFLICT: WattleType is listed here AND in typevar_forbidden,",
     "where the in-force rule makes it an ERROR. The forbidden list wins today",
-    "because no DR has downgraded it; the conflict is surfaced as",
+    "because no documented change has downgraded it; the conflict is surfaced as",
     "R-CORE-CFG-01 rather than silently decided by the tool."
   ],
   "typevar_tolerated": [
