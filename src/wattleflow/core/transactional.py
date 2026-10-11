@@ -9,8 +9,9 @@
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
+from collections.abc import Mapping
 from datetime import datetime
-from typing import Any, Dict, Generic, Optional, TypeVar
+from typing import Any, Generic, TypeVar
 
 from .framework import IWattleflow
 from .structural import IAdaptee, ITarget
@@ -23,6 +24,26 @@ __author__ = "WattleFlow"
 __copyright__ = "© 2022–2026 WattleFlow. All rights reserved"
 __license__ = "Apache 2 Licence"
 
+__all__ = [
+    "IDocument",
+    "IDriver",
+    "IConfig",
+    "IParser",
+    "IFormatter",
+    "ISignal",
+    "IEvent",
+    "IEventListener",
+    "IEventSource",
+    "IRepository",
+    "IBlackboard",
+    "IModule",
+    "IPipeline",
+    "IProcessor",
+    "IQuery",
+    "ISaga",
+    "IUnitOfWork",
+    "IScheduler",
+]
 
 # --------------------------------------------------------------------------- #
 # region Types                                                                #
@@ -42,31 +63,46 @@ Result = TypeVar("Result")  # query result type                   [NFRQ-ORG-03]
 # --------------------------------------------------------------------------- #
 
 
-# Document
+# IDocument (IDocument) - Document interface
 class IDocument(IAdaptee, Generic[Content], ABC):
-    ...
+    """
+    IDocument - Document abstract interface.
+
+    A mutable adaptee that carries a typed payload. specific_request() narrows
+    the IAdaptee return type to Content; update_content() replaces it.
+
+    Interface:
+        specific_request() -> Content
+        update_content(content: Content) -> None
+    """
+
+    __slots__ = ()
 
     @abstractmethod
     def update_content(self, content: Content) -> None: ...
+
     @abstractmethod
     def specific_request(self) -> Content: ...
 
 
-# IDriver
+# IDriver (IDriver) - Resource driver interface
 class IDriver(IWattleflow, ABC):
     """
     IDriver - Resource driver abstract interface.
 
-    Manages the lifecycle of an external resource (open/close) and reads from or
-    writes to it by URI. metadata() describes the driver at the class level.
+    Manages the lifecycle of an external resource (load() acquires it,
+    close() releases it) and reads from or writes to it by URI. metadata()
+    describes the driver at the class level.
 
     Interface:
         load() -> None
         close() -> None
-        read(uri: str, **kwargs) -> Any
-        write(uri: str, **kwargs) -> Any
+        read(uri: str, **kwargs: Any) -> Any
+        write(uri: str, **kwargs: Any) -> Any
         metadata() -> Any  (classmethod)
     """
+
+    __slots__ = ()
 
     @abstractmethod
     def load(self) -> None: ...
@@ -75,10 +111,10 @@ class IDriver(IWattleflow, ABC):
     def close(self) -> None: ...
 
     @abstractmethod
-    def read(self, uri: str, **kwargs) -> Any: ...
+    def read(self, uri: str, **kwargs: Any) -> Any: ...
 
     @abstractmethod
-    def write(self, uri: str, **kwargs) -> Any: ...
+    def write(self, uri: str, **kwargs: Any) -> Any: ...
 
     @classmethod
     @abstractmethod
@@ -101,7 +137,7 @@ class IConfig(IWattleflow, ABC):
     optional key would make every consumer defensive.
 
     Interface:
-        find(*keys, default=None) -> Any
+        find(*keys: str, default: Any = None) -> Any
     """
 
     __slots__ = ()
@@ -123,32 +159,48 @@ class IParser(IWattleflow, Generic[Content], ABC):
     expression tree is implied here.
 
     Interface:
-        parse(**kwargs) -> Content
+        parse(**kwargs: Any) -> Content
     """
 
+    __slots__ = ()
+
     @abstractmethod
-    def parse(self, **kwargs) -> Content: ...
+    def parse(self, **kwargs: Any) -> Content: ...
 
 
 class IFormatter(IWattleflow, Generic[Content], ABC):
     """
     IFormatter - Serialisation abstract interface.
 
-    The write-side mirror of IParser: renders a domain object into a payload.
-    The caller owns the sink, so render() returns the payload and writes
-    nothing. As with IParser, the contract fixes no transport.
+    The write-side counterpart of IParser: produces a payload from the inputs
+    passed as keyword arguments. The caller owns the sink, so render() returns
+    the payload and writes nothing. As with IParser, the contract fixes no
+    transport. The Content parameter pairs a formatter with an IParser of the
+    same type; it does not appear in the render() signature.
 
     Interface:
-        render(**kwargs) -> bytes | str
+        render(**kwargs: Any) -> bytes | str
     """
 
+    __slots__ = ()
+
     @abstractmethod
-    def render(self, **kwargs) -> bytes | str: ...
+    def render(self, **kwargs: Any) -> bytes | str: ...
 
 
-# Signal
+# ISignal (ISignal) - Signal interface
 class ISignal(IAdaptee, Generic[Content], ABC):
-    ...
+    """
+    ISignal - Signal abstract interface.
+
+    An immutable adaptee that carries a typed payload. specific_request()
+    narrows the IAdaptee return type to Content.
+
+    Interface:
+        specific_request() -> Content
+    """
+
+    __slots__ = ()
 
     @abstractmethod
     def specific_request(self) -> Content: ...
@@ -163,17 +215,19 @@ class IEvent(IWattleflow, ABC):
     correlation/source, timestamp, type and payload.
 
     Interface:
-        correlation_id -> Optional[str]  (property)
-        id -> str                        (property)
-        source -> Optional[str]          (property)
-        timestamp -> datetime            (property)
-        type -> str                      (property)
-        payload -> Dict[str, Any]        (property)
+        correlation_id -> str | None   (property)
+        id -> str                      (property)
+        source -> str | None           (property)
+        timestamp -> datetime          (property)
+        type -> str                    (property)
+        payload -> dict[str, Any]      (property)
     """
+
+    __slots__ = ()
 
     @property
     @abstractmethod
-    def correlation_id(self) -> Optional[str]: ...
+    def correlation_id(self) -> str | None: ...
 
     @property
     @abstractmethod
@@ -181,7 +235,7 @@ class IEvent(IWattleflow, ABC):
 
     @property
     @abstractmethod
-    def source(self) -> Optional[str]: ...
+    def source(self) -> str | None: ...
 
     @property
     @abstractmethod
@@ -193,44 +247,53 @@ class IEvent(IWattleflow, ABC):
 
     @property
     @abstractmethod
-    def payload(self) -> Dict[str, Any]: ...
+    def payload(self) -> dict[str, Any]: ...
 
 
-class IEventListener(IWattleflow, ABC):
+class IEventListener(IWattleflow, Generic[Event], ABC):
     """
     IEventListener - Event-Driven (listener role) abstract interface.
 
-    Reacts to events delivered by an IEventSource.
+    Reacts to events delivered by an IEventSource. Generic over the same Event
+    type as its source, so a source and its listeners agree on the event type.
 
     Interface:
-        on_event(event: IEvent) -> None
+        on_event(event: Event) -> None
     """
 
+    __slots__ = ()
+
     @abstractmethod
-    def on_event(self, event: IEvent) -> None: ...
+    def on_event(self, event: Event) -> None: ...
 
 
 class IEventSource(IWattleflow, Generic[Event], ABC):
     """
     IEventSource - Event-Driven (source role) abstract interface.
 
-    Registers listeners and emits events to them. Generic over the emitted
-    Event type; **kwargs carries emission metadata so subclasses
+    Registers and unregisters listeners and emits events to them. Generic over
+    the emitted Event type; **kwargs carries emission metadata so subclasses
     need no widening override.
 
     Interface:
-        register_listener(listener: IEventListener) -> None
-        emit_event(event: Event, **kwargs) -> None
+        register_listener(listener: IEventListener[Event]) -> None
+        unregister_listener(listener: IEventListener[Event]) -> None
+        emit_event(event: Event, **kwargs: Any) -> None
     """
 
-    @abstractmethod
-    def register_listener(self, listener: IEventListener) -> None: ...
+    __slots__ = ()
 
     @abstractmethod
-    def emit_event(self, event: Event, **kwargs) -> None: ...
+    def register_listener(self, listener: IEventListener[Event]) -> None: ...
+
+    @abstractmethod
+    def unregister_listener(self, listener: IEventListener[Event]) -> None: ...
+
+    @abstractmethod
+    def emit_event(self, event: Event, **kwargs: Any) -> None: ...
 
 
-# IRepository
+# IRepository (IRepository) - Repository interface
 class IRepository(IWattleflow, ABC):
     """
     IRepository - Repository abstract interface.
@@ -241,9 +304,11 @@ class IRepository(IWattleflow, ABC):
     Interface:
         count -> int  (property)
         clear() -> None
-        read(identifier: str, *args, **kwargs) -> ITarget
-        write(facade: ITarget, *args, **kwargs) -> bool
+        read(identifier: str, *args: Any, **kwargs: Any) -> ITarget
+        write(facade: ITarget, *args: Any, **kwargs: Any) -> bool
     """
+
+    __slots__ = ()
 
     @property
     @abstractmethod
@@ -253,33 +318,38 @@ class IRepository(IWattleflow, ABC):
     def clear(self) -> None: ...
 
     @abstractmethod
-    def read(self, identifier: str, *args, **kwargs) -> ITarget: ...
+    def read(self, identifier: str, *args: Any, **kwargs: Any) -> ITarget: ...
 
     @abstractmethod
-    def write(self, facade: ITarget, *args, **kwargs) -> bool: ...
+    def write(self, facade: ITarget, *args: Any, **kwargs: Any) -> bool: ...
 
 
-# IBlackboard - (IBlackboard, IModule)
+# IBlackboard - (IBlackboard, IModule) - Blackboard interfaces
 class IBlackboard(IWattleflow, ABC):
     """
     IBlackboard - Blackboard (blackboard role) abstract interface.
 
     Shared workspace that modules read from and write to. Holds a canvas,
     registers repositories and mediates creation/lookup of target facades.
+    The canvas is exposed read-only: modules change the blackboard only
+    through create() and write().
 
     Interface:
-        canvas -> Dict[str, Any]  (property)
-        count -> int              (property)
+        canvas -> Mapping[str, Any]  (property, read-only view)
+        count -> int                 (property)
         clean() -> None
-        create(caller: IWattleflow, *args, **kwargs) -> ITarget
+        create(caller: IWattleflow, *args: Any, **kwargs: Any) -> ITarget
         read(identifier: str) -> ITarget
         register(repository: IRepository) -> None
-        write(caller: IWattleflow, facade: ITarget, *args, **kwargs) -> str
+        write(caller: IWattleflow, facade: ITarget,
+              *args: Any, **kwargs: Any) -> str
     """
+
+    __slots__ = ()
 
     @property
     @abstractmethod
-    def canvas(self) -> Dict[str, Any]: ...
+    def canvas(self) -> Mapping[str, Any]: ...
 
     @property
     @abstractmethod
@@ -289,7 +359,7 @@ class IBlackboard(IWattleflow, ABC):
     def clean(self) -> None: ...
 
     @abstractmethod
-    def create(self, caller: IWattleflow, *args, **kwargs) -> ITarget: ...
+    def create(self, caller: IWattleflow, *args: Any, **kwargs: Any) -> ITarget: ...
 
     @abstractmethod
     def read(self, identifier: str) -> ITarget: ...
@@ -302,8 +372,8 @@ class IBlackboard(IWattleflow, ABC):
         self,
         caller: IWattleflow,
         facade: ITarget,
-        *args,
-        **kwargs,
+        *args: Any,
+        **kwargs: Any,
     ) -> str: ...
 
 
@@ -314,14 +384,16 @@ class IModule(IWattleflow, ABC):
     A knowledge source that inspects and updates the blackboard.
 
     Interface:
-        update(blackboard: IBlackboard, *args, **kwargs) -> None
+        update(blackboard: IBlackboard, *args: Any, **kwargs: Any) -> None
     """
 
+    __slots__ = ()
+
     @abstractmethod
-    def update(self, blackboard: IBlackboard, *args, **kwargs) -> None: ...
+    def update(self, blackboard: IBlackboard, *args: Any, **kwargs: Any) -> None: ...
 
 
-# IPipeline
+# IPipeline (IPipeline) - Pipeline interface
 class IPipeline(IWattleflow, ABC):
     """
     IPipeline - Pipeline abstract interface.
@@ -329,20 +401,23 @@ class IPipeline(IWattleflow, ABC):
     Drives a target facade through a processor as one stage of processing.
 
     Interface:
-        process(processor: IProcessor, facade: ITarget, *args, **kwargs) -> None
+        process(processor: IProcessor, facade: ITarget,
+                *args: Any, **kwargs: Any) -> None
     """
+
+    __slots__ = ()
 
     @abstractmethod
     def process(
         self,
-        processor: "IProcessor",
+        processor: IProcessor,
         facade: ITarget,
-        *args,
-        **kwargs,
+        *args: Any,
+        **kwargs: Any,
     ) -> None: ...
 
 
-# IProcessor
+# IProcessor (IProcessor) - Processor interface
 class IProcessor(IWattleflow, Generic[Item], ABC):
     """
     IProcessor - Processor abstract interface.
@@ -359,6 +434,8 @@ class IProcessor(IWattleflow, Generic[Item], ABC):
     the contract shape is preserved unchanged here.
     """
 
+    __slots__ = ()
+
     @abstractmethod
     def create_generator(self) -> Item: ...
 
@@ -366,7 +443,7 @@ class IProcessor(IWattleflow, Generic[Item], ABC):
     def start(self) -> None: ...
 
 
-# IQuery
+# IQuery (IQuery) - Query Object interface
 class IQuery(IWattleflow, Generic[Result], ABC):
     """
     IQuery - Query Object abstract interface.
@@ -377,11 +454,13 @@ class IQuery(IWattleflow, Generic[Result], ABC):
         execute() -> Result
     """
 
+    __slots__ = ()
+
     @abstractmethod
     def execute(self) -> Result: ...
 
 
-# Saga pattern
+# ISaga (ISaga) - Saga interface
 class ISaga(IWattleflow, Generic[Event], ABC):
     """
     ISaga - Saga abstract interface.
@@ -390,22 +469,24 @@ class ISaga(IWattleflow, Generic[Event], ABC):
     completed steps if a later one fails.
 
     Interface:
-        start(initial_state, *args, **kwargs) -> None
-        handle_event(event: Event, *args, **kwargs) -> None
+        start(initial_state: Any, *args: Any, **kwargs: Any) -> None
+        handle_event(event: Event, *args: Any, **kwargs: Any) -> None
         compensate() -> None
     """
 
-    @abstractmethod
-    def start(self, initial_state, *args, **kwargs) -> None: ...
+    __slots__ = ()
 
     @abstractmethod
-    def handle_event(self, event: Event, *args, **kwargs) -> None: ...
+    def start(self, initial_state: Any, *args: Any, **kwargs: Any) -> None: ...
+
+    @abstractmethod
+    def handle_event(self, event: Event, *args: Any, **kwargs: Any) -> None: ...
 
     @abstractmethod
     def compensate(self) -> None: ...
 
 
-# IUnitOfWork
+# IUnitOfWork (IUnitOfWork) - Unit of Work interface
 class IUnitOfWork(IWattleflow, Generic[Entity], ABC):
     """
     IUnitOfWork - Unit of Work abstract interface.
@@ -416,10 +497,12 @@ class IUnitOfWork(IWattleflow, Generic[Entity], ABC):
     Interface:
         commit() -> None
         rollback() -> None
-        register_new(entity: Entity, *args, **kwargs) -> None
-        register_dirty(entity: Entity, *args, **kwargs) -> None
-        register_deleted(entity: Entity, *args, **kwargs) -> None
+        register_new(entity: Entity, *args: Any, **kwargs: Any) -> None
+        register_dirty(entity: Entity, *args: Any, **kwargs: Any) -> None
+        register_deleted(entity: Entity, *args: Any, **kwargs: Any) -> None
     """
+
+    __slots__ = ()
 
     @abstractmethod
     def commit(self) -> None: ...
@@ -428,18 +511,17 @@ class IUnitOfWork(IWattleflow, Generic[Entity], ABC):
     def rollback(self) -> None: ...
 
     @abstractmethod
-    def register_new(self, entity: Entity, *args, **kwargs) -> None: ...
+    def register_new(self, entity: Entity, *args: Any, **kwargs: Any) -> None: ...
 
     @abstractmethod
-    def register_dirty(self, entity: Entity, *args, **kwargs) -> None: ...
+    def register_dirty(self, entity: Entity, *args: Any, **kwargs: Any) -> None: ...
 
     @abstractmethod
-    def register_deleted(self, entity: Entity, *args, **kwargs) -> None: ...
+    def register_deleted(self, entity: Entity, *args: Any, **kwargs: Any) -> None: ...
 
 
-# IScheduler
-# IEventSource already derives from IWattleflow; IScheduler stays an
-# IWattleflow through IEventSource (C3/MRO note unchanged).
+# IScheduler (IScheduler) - Scheduler / Orchestrator interface
+# IScheduler is an IWattleflow through IEventSource; no direct base needed.
 class IScheduler(IEventSource[Event], ABC):
     """
     IScheduler - Scheduler / Orchestrator abstract interface (Event-Driven source).
@@ -450,14 +532,17 @@ class IScheduler(IEventSource[Event], ABC):
     Singleton)`), not here.
 
     Interface:
-        setup_orchestrator(*args, **kwargs) -> None
+        setup_orchestrator(*args: Any, **kwargs: Any) -> None
         start_orchestration(parallel: bool) -> None
         stop_orchestration() -> None
-        (register_listener, emit_event inherited from IEventSource[Event])
+        (register_listener, unregister_listener, emit_event
+         inherited from IEventSource[Event])
     """
 
+    __slots__ = ()
+
     @abstractmethod
-    def setup_orchestrator(self, *args, **kwargs) -> None: ...
+    def setup_orchestrator(self, *args: Any, **kwargs: Any) -> None: ...
 
     @abstractmethod
     def start_orchestration(self, parallel: bool) -> None: ...

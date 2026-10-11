@@ -14,7 +14,7 @@ license = "Apache-2.0"
 license-files = ["LICENSE"]
 authors = [{ name = "wattleflow", email = "wattleflow@outlook.com" }]
 keywords = ["wattleflow", "framework", "core", "library", "design", "patterns", "python", "software engineering"]
-requires-python = ">=3.10"
+requires-python = ">=3.12.14"
 # Intentionally empty: the framework depends on the standard library only.
 dependencies = []
 classifiers = [
@@ -55,7 +55,7 @@ namespaces = true
 
 [tool.ruff]
 line-length = 120
-target-version = "py310"
+target-version = "py312"
 
 [tool.ruff.lint]
 select = ["E", "W", "F", "I", "B"]
