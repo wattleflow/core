@@ -501,24 +501,7 @@ class IElement(IWattleflow, ABC):
 
 
 # ILogger interface
-class ILogger(IObservable, ABC):
-    """
-    ILogger - Logger abstract interface.
-
-    Standard severity-level logging API. Extends IObservable, so a logger may
-    also publish events to subscribed observers.
-
-    Interface:
-        subscribe(observer: IObserver) -> None     (inherited)
-        unsubscribe(observer: IObserver) -> None   (inherited)
-        debug(msg: str, **kwargs: Any) -> None
-        info(msg: str, **kwargs: Any) -> None
-        warning(msg: str, **kwargs: Any) -> None
-        error(msg: str, **kwargs: Any) -> None
-        critical(msg: str, **kwargs: Any) -> None
-        exception(msg: str, **kwargs: Any) -> None
-    """
-
+class ILogger(IWattleflow, ABC):
     __slots__ = ()
 
     @abstractmethod
@@ -535,6 +518,9 @@ class ILogger(IObservable, ABC):
 
     @abstractmethod
     def critical(self, msg: str, **kwargs: Any) -> None: ...
+
+    @abstractmethod
+    def fatal(self, msg: str, **kwargs: Any) -> None: ...
 
     @abstractmethod
     def exception(self, msg: str, **kwargs: Any) -> None: ...
