@@ -1,13 +1,11 @@
 [build-system]
-# setuptools>=77 is required for PEP 639 license expressions
-# (license = "..." + license-files), which emit Metadata-Version 2.4.
 requires = ["setuptools>=77"]
 build-backend = "setuptools.build_meta"
 
 [project]
 name = "wattleflow"
 # Version is set manually and must match the git tag pushed for the release.
-version = "0.0.0.60"
+version = "0.0.0.61"
 description = "Wattleflow Core for Python"
 readme = "README.md"
 license = "Apache-2.0"
@@ -46,10 +44,7 @@ include-package-data = true
 
 [tool.setuptools.packages.find]
 where = ["src"]
-# `wattleflow` is an implicit namespace package (no __init__.py) so that sibling
-# distributions can ship wattleflow.workflow, wattleflow.processors, etc.
-# This distribution owns wattleflow.core only — the explicit include keeps any
-# other directory under src/wattleflow (e.g. logo/) out of the wheel.
+
 include = ["wattleflow.core*"]
 namespaces = true
 

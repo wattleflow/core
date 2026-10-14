@@ -242,7 +242,7 @@ class IPipeline(IWattleflow, ABC):
     __slots__ = ()
 
     @abstractmethod
-    def run_stage(
+    def process(
         self,
         processor: IProcessor,
         facade: ITarget,
